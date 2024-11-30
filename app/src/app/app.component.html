@@ -1,0 +1,97 @@
+<mat-toolbar color="primary" class="example-toolbar">
+  <button mat-icon-button (click)="isExpanded = !isExpanded">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <h1 class="example-app-name">Nested Menus</h1>
+</mat-toolbar>
+<mat-sidenav-container class="example-container" autosize>
+  <mat-sidenav #sidenav class="example-sidenav" mode="side" opened="true" (mouseenter)="mouseenter()"
+               (mouseleave)="mouseleave()">
+    <mat-nav-list>
+      <!-- Identity -->
+      <mat-list-item [routerLink]="'identity'" class="parent">
+        <div class="menu-link">
+          <mat-icon class="menu-icon" mat-list-icon>person</mat-icon>
+          <span class="full-width" *ngIf="isExpanded || isShowing">Identity</span>
+        </div>
+      </mat-list-item>
+
+      <!-- Agents -->
+      <mat-list-item [routerLink]="'dkgAgent'" class="parent">
+        <div class="menu-link">
+          <mat-icon class="menu-icon" mat-list-icon>recent_actors</mat-icon>
+          <span class="full-width" *ngIf="isExpanded || isShowing">Dkg Agents</span>
+        </div>
+      </mat-list-item>
+
+      <!-- Add Context -->
+      <mat-list-item [routerLink]="'addContext'" class="parent">
+        <div class="menu-link">
+          <mat-icon class="menu-icon" mat-list-icon>library_add</mat-icon>
+          <span class="full-width" *ngIf="isExpanded || isShowing">Add Context</span>
+        </div>
+      </mat-list-item>
+
+      <mat-list-item (click)="showSubmenu = !showSubmenu" class="parent">
+        <div class="menu-link">
+          <mat-icon class="menu-icon" mat-list-icon>speaker_notes</mat-icon>
+          <span class="full-width" *ngIf="isExpanded || isShowing">Context</span>
+          <mat-icon class="menu-button" [ngClass]="{'rotated' : showSubmenu}" *ngIf="isExpanded || isShowing">
+            expand_more
+          </mat-icon>
+        </div>
+      </mat-list-item>
+      <div class="submenu" [ngClass]="{'expanded' : showSubmenu}" *ngIf="isShowing || isExpanded">
+        <!--        <a mat-list-item href="...">Identity Registryasdasdasd</a>-->
+        <a [routerLink]="'context/identityRegistry'" mat-list-item>
+          <div class="menu-link">
+            <mat-icon class="menu-icon" mat-list-icon>account_circle</mat-icon>
+            Identity Registry
+          </div>
+        </a>
+        <a [routerLink]="'context/issuersRegistry'" mat-list-item>
+          <div class="menu-link">
+            <mat-icon class="menu-icon" mat-list-icon>accessibility</mat-icon>
+            Issuers Registry
+          </div>
+        </a>
+        <a [routerLink]="'context/topicsRegistry'" mat-list-item>
+          <div class="menu-link">
+            <mat-icon class="menu-icon" mat-list-icon>recent_actors</mat-icon>
+            Topics Registry
+          </div>
+        </a>
+      </div>
+
+      <!-- Ifc Viewer -->
+      <mat-list-item [routerLink]="'ifcViewer'" class="parent">
+        <div class="menu-link">
+          <mat-icon class="menu-icon" mat-list-icon>library_add</mat-icon>
+          <span class="full-width" *ngIf="isExpanded || isShowing">Ifc Viewer</span>
+        </div>
+      </mat-list-item>
+
+      <!-- Test -->
+      <mat-list-item [routerLink]="'test'" class="parent">
+        <div class="menu-link">
+          <mat-icon class="menu-icon" mat-list-icon>library_add</mat-icon>
+          <span class="full-width" *ngIf="isExpanded || isShowing">Test</span>
+        </div>
+      </mat-list-item>
+
+      <!-- Accounts -->
+      <mat-list-item [routerLink]="'account'" class="parent">
+        <div class="menu-link">
+          <mat-icon class="menu-icon" mat-list-icon>recent_actors</mat-icon>
+          <span class="full-width" *ngIf="isExpanded || isShowing">Accounts</span>
+        </div>
+      </mat-list-item>
+
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <div class="example-sidenav-content">
+    <router-outlet></router-outlet>
+  </div>
+
+</mat-sidenav-container>

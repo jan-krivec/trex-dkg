@@ -1,0 +1,297 @@
+html {
+  font-size: 14px;
+}
+
+body {
+  font-family: var(--font-family);
+  font-weight: normal;
+  background: var(--surface-ground);
+  color: var(--text-color);
+  padding: 0rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.card {
+  background: var(--surface-card);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.card-content {
+  display: flex;           /* Ensures the use of Flexbox */
+  flex-direction: column;  /* Stacks the children vertically */
+  align-items: center;     /* Centers children vertically */
+  justify-content: center; /* Centers children horizontally */
+  margin-top: 10px;        /* Additional styling */
+}
+
+.id-card {
+
+}
+
+
+.full-width {
+  width: 90%;
+  margin-left: 5%;
+}
+
+mat-form-field {
+  width: 100%; /* Set width to 100% of the parent container */
+}
+
+.center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;       /* This will center the fields horizontally */
+  justify-content: center;   /* This will center the fields vertically */
+  height: 70%;
+}
+
+mat-card-subtitle {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-left: 0;
+}
+
+.mat-mdc-table {
+  width: 100%;
+  max-height: 500px;
+  overflow: auto;
+}
+
+.table-container {
+  border: 1px solid #ccc; /* Border color and width */
+  margin: 10px 0; /* Adjust as needed */
+  padding: 10px; /* Adjust as needed */
+  max-height: 300px; /* Adjust as needed */
+  overflow-y: auto; /* Enable vertical scroll if content exceeds max height */
+  width: 90%;
+}
+
+table {
+  width: 100%;
+}
+
+mat-card-subtitle {
+  margin: 1em 0;
+}
+
+tr.example-detail-row {
+  height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.vertical-toggle-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.car-tab {
+  margin-top: 10px;
+}
+
+.example-element-diagram {
+  min-width: 80px;
+  border: 2px solid black;
+  padding: 8px;
+  font-weight: lighter;
+  margin: 8px 0;
+  height: 104px;
+}
+
+.example-element-symbol {
+  font-weight: bold;
+  font-size: 40px;
+  line-height: normal;
+}
+
+.example-element-description {
+  padding: 8px;
+  word-wrap: break-word; /* Add this line to enable word wrapping */
+  max-width: 80%;
+}
+
+.example-element-description-attribution {
+  opacity: 0.5;
+}
+
+.factory-card {
+  max-height: 70vh;
+  width: 40vw;
+}
+
+.test-card {
+  max-height: 80vh;
+  width: 50vw;
+}
+
+button[type="submit"] {
+  align-self: flex-end; /* This will align the button to the end of its container */
+  margin-right: 5%;
+}
+
+.router-outlet-container {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center;     /* Centers vertically */
+  height: 100vh;           /* Full viewport height */
+  padding-top: 64px;  /* Adjust this value based on the actual height of your toolbar */
+}
+
+.mat-mdc-card-subtitle.subtitle {
+  margin-bottom: 2%;
+}
+
+.claim-topic-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.claim-topic-text {
+  flex: 1;
+  padding-right: 10px; /* Add some padding to ensure text doesn't overlap with the button */
+}
+
+body, html {
+  margin: 0; /* Reset default margin */
+  height: 100%; /* Ensure the body takes full height */
+  font-family: Roboto, Arial, sans-serif; /* Match Angular Material typography */
+}
+.sidenav-container {
+  height: calc(100% - 64px);
+  display: flex;
+  flex-direction: row; /* Keep the sidenav and content in a row */
+}
+
+/*.menu-button {*/
+/*  margin-right: 10px;*/
+/*  margin-left: 10px;*/
+/*}*/
+
+.sidenav-closed {
+  width: 65px;
+}
+
+.sidenav-opened {
+  min-width: 200px;
+}
+
+.topbar {
+  padding: 0;
+  height: 64px;
+}
+
+.topbar span {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.mdc-list-item__content {
+  width: 100%;
+}
+
+.menu-list-item:hover {
+  background-color: #e0e0e0; /* Hover color */
+  cursor: pointer;
+}
+
+.menu-list-item.active {
+  background-color: #d1c4e9; /* Light color for active state */
+  color: #3f51b5; /* Primary color for active text */
+}
+
+.display-name {
+  flex: 1; /* Allows display name to take available space */
+}
+
+/* Indicator icon styling */
+.menu-list-item span mat-icon {
+  color: #757575; /* Muted color */
+}
+
+/* Adjustments for nested menu items */
+[ngStyle] {
+  margin-left: 16px;
+}
+
+.example-toolbar {
+  height: 70px;
+}
+
+.example-container {
+  height: calc(100vh - 70px);
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+.example-sidenav-content {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.example-sidenav {
+  user-select: none;
+}
+.full-width {
+  width: 100%;
+}
+.menu-button {
+  transition: 300ms ease-in-out;
+  transform: rotate(0deg);
+}
+.menu-button.rotated {
+  transform: rotate(180deg);
+}
+.submenu {
+  max-height: 0;
+  overflow-y: hidden;
+  transition: transform 300ms ease-in-out;
+  transform: scaleY(0);
+  transform-origin: top;
+  padding-left: 30px;
+}
+.submenu.expanded {
+  max-height: 300px;
+  transform: scaleY(1);
+}
+
+.menu-icon {
+  margin-right: 5px;
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.menu-link {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.test-field {
+  width: 100%; /* Fill the width of the container */
+  min-height: 40vh;
+  max-height: 60vh;
+}

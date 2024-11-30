@@ -1,0 +1,16 @@
+.DS_Store
+.rpc
+.secret
+.deps
+.env
+.vscode
+artifacts
+npm-debug.log
+/.idea/*
+/.vscode/*
+/node_modules/*
+*typechain*/
+cache/*
+coverage/*
+metadata/*
+coverage.json

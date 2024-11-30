@@ -1,0 +1,47 @@
+name: checks
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up environment
+        uses: ./.github/actions/setup
+
+      - name: Run Solidity and Typescript linters
+        run: npm run lint
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up environment
+        uses: ./.github/actions/setup
+
+      - name: Run Solidity and Typescript formatters
+        run: npm run format
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up environment
+        uses: ./.github/actions/setup
+
+      - name: Run tests
+        run: npm run test:parallel

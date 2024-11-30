@@ -1,0 +1,21 @@
+<div fxLayout="column" fxLayoutAlign="start center" style="height: calc(100vh - 64px);">
+  <!-- Subtract the height of the toolbar (e.g., 64px) from the 100vh if there's a fixed toolbar at the top -->
+
+  <div fxLayout="row" style="width: 80vw; margin: 30px 0" fxLayout.xs="column" fxLayoutAlign="center center" fxLayoutGap="5%">
+    <mat-form-field>
+      <mat-label>Select me</mat-label>
+      <mat-select [(value)]="this.selectedContext">
+        <mat-option *ngFor="let context of this.contexts" [value]="context">{{context}}</mat-option>
+      </mat-select>
+      <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row" style="width: 80vw;" fxLayout.xs="column" fxLayoutAlign="center center" fxLayoutGap="5%">
+
+
+      <router-outlet></router-outlet>
+
+  </div>
+
+</div>

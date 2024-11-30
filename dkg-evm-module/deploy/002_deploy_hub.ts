@@ -1,0 +1,92 @@
+import { HardhatRuntimeEnvironment } from 'hardhat/types';
+import { DeployFunction } from 'hardhat-deploy/types';
+
+const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+  const { deployer } = await hre.getNamedAccounts();
+
+  if (
+    !hre.helpers.isDeployed('Hub') ||
+    (hre.helpers.contractDeployments.contracts['Hub'].version !== undefined &&
+      !hre.helpers.contractDeployments.contracts['Hub'].version.startsWith('2.'))
+  ) {
+    if (hre.network.config.environment === 'development') {
+      hre.helpers.resetDeploymentsJson();
+      console.log('Hardhat deployments config reset.');
+    }
+
+    let Hub;
+    if (!hre.helpers.isDeployed('Hub')) {
+      console.log('Deploying Hub V1...');
+      const agents = [
+        '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+        '0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC',
+        '0x90F79bf6EB2c4f870365E785982E1f101E93b906',
+        '0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65',
+      ];
+      try {
+        Hub = await hre.deployments.deploy('Hub', {
+          from: deployer,
+          args: [agents],
+          log: true,
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        hre.helpers.updateDeploymentsJson('Hub', Hub.address, Hub.receipt!.blockNumber);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
+
+  // New HubController should be manually deployed for testnet/mainnet:
+  // 1. Deploy HubController contract using software wallet.
+  // 2. Transfer ownership of the Hub to the new HubController, using transferHubOwnership function in the old HubController.
+  // 3. Transfer ownership of the new HubController to the MultiSig Wallet.
+  // 4. Update address of new HubController to deployments/otp_{testnet/mainnet}_contracts.json and commit the change
+  // 5. Add software burner wallet that will be used for redeployment of other contracts to the MultiSig (remove after redeployment).
+  if (!hre.helpers.isDeployed('HubController')) {
+    let previousHubControllerAddress;
+    if (hre.helpers.inConfig('HubController')) {
+      previousHubControllerAddress = hre.helpers.contractDeployments.contracts['HubController'].evmAddress;
+    } else {
+      previousHubControllerAddress = null;
+    }
+
+    const HubController = await hre.helpers.deploy({
+      newContractName: 'HubController',
+      setContractInHub: false,
+    });
+
+    if (previousHubControllerAddress === null) {
+      const hubAddress = hre.helpers.contractDeployments.contracts['Hub'].evmAddress;
+      const Hub = await hre.ethers.getContractAt('Hub', hubAddress, deployer);
+
+      const hubOwner = await Hub.owner();
+
+      if (deployer.toLowerCase() === hubOwner.toLowerCase()) {
+        const transferHubOwneshipTx = await Hub.transferOwnership(HubController.address);
+        await transferHubOwneshipTx.wait();
+
+        console.log(`Hub ownership transferred to HubController (${HubController.address})`);
+      }
+    } else {
+      const previousHubController = await hre.ethers.getContractAt(
+        'HubController',
+        previousHubControllerAddress,
+        deployer,
+      );
+
+      const previousHubControllerOwner = await previousHubController.owner();
+
+      if (deployer.toLowerCase() === previousHubControllerOwner.toLowerCase()) {
+        const transferHubOwneshipTx = await previousHubController.transferHubOwnership(HubController.address);
+        await transferHubOwneshipTx.wait();
+
+        console.log(`Hub ownership transferred to HubController (${HubController.address})`);
+      }
+    }
+  }
+};
+
+export default func;
+func.tags = ['Hub', 'v1'];

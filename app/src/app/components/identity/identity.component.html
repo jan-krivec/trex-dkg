@@ -1,0 +1,312 @@
+<div fxLayout="column" fxLayoutAlign="center center" style="height: calc(100vh - 64px);">
+  <!-- Subtract the height of the toolbar (e.g., 64px) from the 100vh if there's a fixed toolbar at the top -->
+
+  <div fxLayout="row" style="width: 80vw;" fxLayout.xs="column" fxLayoutAlign="center center" fxLayoutGap="5%">
+    <div fxFlex="100%" fxFlex.gt-sm="45%" fxFlex.xs="100%">
+      <mat-card class="id-card">
+        <mat-card-header>
+          <mat-card-title>{{isEditKey ? 'Edit' : 'View'}} Keys</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-slide-toggle style="margin: 10px 0"
+                            [(ngModel)]="isEditKey">{{isEditKey ? 'Edit' : 'View'}}</mat-slide-toggle>
+          <div *ngIf="!isEditKey">
+            <div>
+
+              <form class="center-content" [formGroup]="viewKeyForm" (ngSubmit)="this.viewKeys()">
+
+                <div style="width: 90%" fxLayoutGap="5%">
+                  <mat-form-field fxFlex="100%">
+                    <mat-label>Wallet Address</mat-label>
+                    <input matInput type="text" formControlName="address">
+                    <button type="button" mat-icon-button matSuffix (click)="this.useOwnAddress(this.viewKeyForm)"
+                            [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="isEditKey">
+                      <mat-icon svgIcon="metamask" aria-hidden="false"></mat-icon>
+                    </button>
+                  </mat-form-field>
+
+                  <mat-form-field fxFlex="100%">
+                    <mat-label>Keytype</mat-label>
+                    <mat-select formControlName="keyType">
+                      <mat-option *ngFor="let key of keyPurposes" [value]="key">
+                        {{ key }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                </div>
+                <button type="submit" mat-raised-button>View Keys
+                </button>
+
+              </form>
+
+              <div class="center-content">
+
+                <section class="table-container mat-elevation-z8" tabindex="0">
+                  <table mat-table [dataSource]="keyDTOS">
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="key">
+                      <th mat-header-cell *matHeaderCellDef> Key</th>
+                      <td mat-cell *matCellDef="let element"> {{element.key}} </td>
+                    </ng-container>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="keyType">
+                      <th mat-header-cell *matHeaderCellDef> Key Type</th>
+                      <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+                    </ng-container>
+
+                    <!-- Symbol Column -->
+                    <ng-container matColumnDef="purposes">
+                      <th mat-header-cell *matHeaderCellDef> Purposes</th>
+                      <td mat-cell *matCellDef="let element"> {{element.purpose.join(', ')}} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsKey; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsKey;"></tr>
+                  </table>
+                </section>
+
+              </div>
+
+            </div>
+
+
+          </div>
+          <div *ngIf="isEditKey">
+            <mat-card-subtitle class="subtitle">Add Key</mat-card-subtitle>
+            <form class="center-content" [formGroup]="addKeyForm" (ngSubmit)="this.addKey()">
+              <div style="width: 90%">
+                <mat-form-field>
+                  <mat-label>Address</mat-label>
+                  <input formControlName="address" matInput>
+                </mat-form-field>
+              </div>
+              <div style="width: 90%">
+                <mat-form-field>
+                  <mat-label>Claim Issuer Address</mat-label>
+                  <input formControlName="ciaddress" matInput>
+                </mat-form-field>
+              </div>
+              <div style="width: 90%">
+                <mat-form-field>
+                  <mat-label>Key Type</mat-label>
+                  <mat-select formControlName="keyType">
+                    <mat-option *ngFor="let key of keyPurposes" [value]="key">
+                      {{ key }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <button type="submit" mat-raised-button>Add Key</button>
+            </form>
+
+            <mat-divider style="margin: 3% 0"></mat-divider>
+
+            <form [formGroup]="deleteKeyForm" (ngSubmit)="this.removeKey()">
+              <mat-card-subtitle class="subtitle">Remove Key</mat-card-subtitle>
+              <div class="center-content">
+                <div style="width: 90%">
+                  <mat-form-field>
+                    <mat-label>Address</mat-label>
+                    <input matInput formControlName="address">
+                  </mat-form-field>
+                </div>
+                <div style="width: 90%">
+                  <mat-form-field>
+                    <mat-label>Claim Issuer Address</mat-label>
+                    <input matInput formControlName="ciaddress">
+                  </mat-form-field>
+                </div>
+                <div style="width: 90%">
+                  <mat-form-field>
+                    <mat-label>Select</mat-label>
+                    <mat-select formControlName="keyType">
+                      <mat-option *ngFor="let key of keyPurposes" [value]="key">
+                        {{ key }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <button type="submit" mat-raised-button>Remove Key</button>
+              </div>
+
+            </form>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div fxFlex="100%" fxFlex.gt-sm="45%" fxFlex.xs="100%">
+      <mat-card class="id-card">
+        <mat-card-header>
+          <mat-card-title>{{isEditClaim ? 'Edit' : 'View'}} Claims</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-slide-toggle style="margin: 10px 0"
+                            [(ngModel)]="isEditClaim">{{isEditClaim ? 'Edit' : 'View'}} Claims
+          </mat-slide-toggle>
+          <div *ngIf="!isEditClaim">
+            <div>
+
+              <form class="center-content" [formGroup]="viewClaimForm" (ngSubmit)="this.viewClaims()">
+
+                <div style="width: 90%" fxLayoutGap="5%">
+                  <mat-form-field fxFlex="100%">
+                    <mat-label>Wallet Address</mat-label>
+                    <input matInput type="text" formControlName="address">
+                    <button type="button" mat-icon-button matSuffix (click)="this.useOwnAddress(this.viewClaimForm)"
+                            [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="isEditClaim">
+                      <mat-icon svgIcon="metamask" aria-hidden="false"></mat-icon>
+                    </button>
+                  </mat-form-field>
+
+                  <mat-form-field fxFlex="100%">
+                    <mat-label>Topic</mat-label>
+                    <input matInput type="number" formControlName="topic">
+                  </mat-form-field>
+
+                </div>
+                <button type="submit" mat-raised-button>View Claims
+                </button>
+
+              </form>
+
+              <div class="center-content">
+
+                <section class="table-container mat-elevation-z8" tabindex="0">
+                  <table mat-table [dataSource]="claimDTOS" multiTemplateDataRows>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="id">
+                      <th mat-header-cell *matHeaderCellDef> Id</th>
+                      <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                    </ng-container>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="topic">
+                      <th mat-header-cell *matHeaderCellDef> Topic</th>
+                      <td mat-cell *matCellDef="let element"> {{element.topic}} </td>
+                    </ng-container>
+
+                    <!-- Symbol Column -->
+                    <ng-container matColumnDef="data">
+                      <th mat-header-cell *matHeaderCellDef> Data</th>
+                      <td mat-cell *matCellDef="let element"> {{element.data}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="expand">
+                      <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+                      <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                          <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+                          <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+                        </button>
+                      </td>
+                    </ng-container>
+
+                   <ng-container matColumnDef="expandedDetail">
+                      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumnsClaim.length">
+                        <div class="example-element-detail"
+                             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                          <div class="example-element-description">
+                            ONCHAINID: {{element.onchainId}}
+                          </div>
+                          <div class="example-element-description">
+                            Issuer: {{element.issuer}}
+                          </div>
+                          <div class="example-element-description">
+                            Signature: {{element.signature}}
+                          </div>
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsClaim; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let element; columns: displayedColumnsClaimExpanded;"
+                        class="example-element-row"
+                        [class.example-expanded-row]="expandedElement === element"
+                        (click)="expandedElement = expandedElement === element ? null : element">
+                    </tr>
+                    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+                  </table>
+                </section>
+
+              </div>
+
+            </div>
+
+
+          </div>
+          <div *ngIf="isEditClaim">
+            <mat-card-subtitle class="subtitle">Add Claim</mat-card-subtitle>
+
+
+            <form class="center-content" [formGroup]="addClaimForm" (ngSubmit)="this.addClaim()">
+
+              <div style="width: 90%" fxLayoutGap="5%">
+                <mat-form-field fxFlex="100%">
+                  <mat-label>Wallet Address</mat-label>
+                  <input matInput type="text" formControlName="address">
+                  <button type="button" mat-icon-button matSuffix
+                          [attr.aria-label]="'Hide password'"
+                          [attr.aria-pressed]="isEditClaim"
+                          (click)="this.useOwnAddress(addClaimForm)">
+                    <mat-icon svgIcon="metamask" aria-hidden="false"></mat-icon>
+                  </button>
+                </mat-form-field>
+
+                <mat-form-field fxFlex="100%">
+                  <mat-label>Topic</mat-label>
+                  <input matInput type="number" formControlName="topic">
+                </mat-form-field>
+
+              </div>
+
+              <div style="width: 90%">
+
+                <mat-form-field>
+                  <mat-label>Claim Data</mat-label>
+                  <textarea matInput formControlName="data"></textarea>
+                </mat-form-field>
+
+              </div>
+
+
+              <button type="submit" mat-raised-button>Add Claim</button>
+
+            </form>
+
+            <mat-divider style="margin: 3% 0"></mat-divider>
+
+            <form [formGroup]="this.deleteClaimForm" (ngSubmit)="this.removeClaim()">
+              <mat-card-subtitle class="subtitle">Remove Claim</mat-card-subtitle>
+              <div class="center-content">
+                <div style="width: 90%">
+                  <mat-form-field>
+                    <mat-label>Address</mat-label>
+                    <input matInput formControlName="address">
+                  </mat-form-field>
+                </div>
+                <div style="width: 90%">
+                  <mat-form-field>
+                    <mat-label>Claim Id</mat-label>
+                    <input matInput formControlName="claimId">
+                  </mat-form-field>
+                </div>
+
+                <button type="submit" mat-raised-button>Remove Claim</button>
+              </div>
+
+            </form>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+</div>

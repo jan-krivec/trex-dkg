@@ -1,0 +1,90 @@
+version: '3.8'
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0.32
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_ROOT_PASSWORD: null
+      MYSQL_DATABASE: operationaldb
+      MYSQL_MAX_CONNECTIONS: 10000
+    expose:
+      - 3306
+    networks:
+      - my-network
+    command: --max-connections=10000
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "if [ -z $$(mysqladmin -h localhost ping 2>/dev/null) ]; then exit 1; fi" ]
+      interval: 5s
+      timeout: 20s
+      retries: 10
+      start_period: 10s
+
+  blazegraph:
+    image: conjecto/blazegraph
+    container_name: blazegraph
+    environment:
+      JAVA_OPTS: "-Xms512m -Xmx2g"
+    volumes:
+      - ./blazegraph-data:/var/lib/blazegraph
+      - ./data:/docker-entrypoint-initdb.d/kb/data
+    ports:
+      - "9999:9999"
+    expose:
+      - 9999
+    networks:
+      - my-network
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "curl -f http://localhost:9999/blazegraph/ || exit 1" ]
+      interval: 5s
+      timeout: 20s
+      retries: 10
+      start_period: 15s
+
+  node-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ot-node
+    ports:
+      - "8900:8900"  # ot-node-docker application port
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ~/certs/:/root/certs/
+    networks:
+      - my-network
+    depends_on:
+      - mysql
+      - blazegraph
+    working_dir: /app/ot-node-docker  # Ensure the working directory is set to /app/ot-node-docker
+    entrypoint: [ "/bin/sh", "-c", "/bin/sleep 25 && chmod +x ./tools/local-network-setup/setup-linux-environment.sh && ./tools/local-network-setup/setup-linux-environment.sh --nodes=8" ]
+
+  hardhat-network:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hardhat-network
+    ports:
+      - "8545:8545"  # ot-node-docker application port
+      - "9545:9545"  # ot-node-docker application port
+    expose:
+      - 8545
+      - 9545
+    working_dir: /app/dkg-evm-module
+    command: >
+      /bin/sh -c "
+      npm run dev:v1 -- --port 8545 &
+      npm run dev:v1 -- --port 9545 &
+      wait
+      "
+    networks:
+      - my-network
+
+volumes:
+  mysql-data:
+  blazegraph-data:
+
+networks:
+  my-network:
+    driver: bridge

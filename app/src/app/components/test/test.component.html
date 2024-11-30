@@ -1,0 +1,31 @@
+<div fxLayout="column" fxLayoutAlign="center center" style="height: calc(100vh - 64px);">
+  <mat-card class="test-card">
+    <mat-card-header>
+      <mat-card-title>Test</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="car-tab">
+        <form [formGroup]="editAgentForm">
+          <div fxLayout="row" fxLayoutAlign="start start" fxFlex="auto">
+            <div fxFlex="60%">
+              <ace class="test-field" style="height: 200px" [config]="config" [mode]="'javascript'" [theme]="'github'" [(value)]="content"></ace>
+            </div>
+            <div fxFlex="35%">
+              <div style="margin-left: 10%" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="5%">
+                <div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="5%">
+                  <button mat-raised-button (click)="this.createAssertion()" fxFlex="40%">Add Context</button>
+                  <button mat-raised-button (click)="this.clear()" fxFlex="40%">Clear</button>
+                </div>
+                <h2>Examples</h2>
+                <button mat-raised-button (click)="this.addCarExample()" style="width: 40%">Person</button>
+                <button mat-raised-button (click)="this.addDocumentExample()" style="width: 40%">Document</button>
+                <button mat-raised-button (click)="this.addWebpageExample()" style="width: 40%">Web Page</button>
+                <button mat-raised-button (click)="this.addPersonExample()" style="width: 40%">Person (no certs)</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
