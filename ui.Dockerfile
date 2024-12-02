@@ -1,11 +1,15 @@
 FROM node:18-bullseye
 
-# Set up the working directory
-WORKDIR /app/ui
 
 # Copy dkg.js first (as a dependency)
 COPY ./dkg.js /app/dkg.js
 COPY dkg-evm-module /app/dkg-evm-module
+
+WORKDIR /app/dkg.js
+RUN npm install
+
+# Set up the working directory
+WORKDIR /app/ui
 
 COPY ./ui/package*.json ./
 COPY ./ui ./
