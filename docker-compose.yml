@@ -82,18 +82,17 @@ services:
     working_dir: /app/ot-node-docker  # Ensure the working directory is set to /app/ot-node-docker
     entrypoint: [ "/bin/sh", "-c", "/bin/sleep 25 && chmod +x ./tools/local-network-setup/setup-linux-environment.sh && ./tools/local-network-setup/setup-linux-environment.sh --nodes=8" ]
 
-  frontend:
+  ui:
     build:
       context: .
       dockerfile: ui.Dockerfile
-    container_name: frontend
+    container_name: ui
     ports:
       - "4200:4200"
-    expose:
-      - 4200
     working_dir: /app/ui
     depends_on:
       - ot-node
+      - dkg-evm-module
     command: ["npm", "start"]
     networks:
       - my-network

@@ -12,15 +12,15 @@ COPY ./ui ./
 RUN npm install
 
 # Create symbolic links
-RUN if [ -e app/ui/node_modules/dkg.js ] || [ -L app/ui/node_modules/dkg.js ]; then \
-    rm -rf app/ui/node_modules/dkg.js; \
+RUN if [ -e /app/ui/node_modules/dkg.js ] || [ -L /app/ui/node_modules/dkg.js ]; then \
+    rm -rf /app/ui/node_modules/dkg.js; \
     fi && \
-    ln -s /app/dkg.js app/ui/node_modules/dkg.js
+    ln -s /app/dkg.js /app/ui/node_modules/dkg.js
 
-RUN if [ -e app/dkg.js/node_modules/dkg-evm-module ] || [ -L app/dkg.js/node_modules/dkg-evm-module ]; then \
-    rm -rf app/dkg.js/node_modules/dkg-evm-module; \
+RUN if [ -e /app/dkg.js/node_modules/dkg-evm-module ] || [ -L /app/dkg.js/node_modules/dkg-evm-module ]; then \
+    rm -rf /app/dkg.js/node_modules/dkg-evm-module; \
     fi && \
-    ln -s /app/dkg-evm-module app/dkg.js/node_modules/dkg-evm-module
+    ln -s /app/dkg-evm-module /app/dkg.js/node_modules/dkg-evm-module
 
 # Expose the application port
 EXPOSE 4200
