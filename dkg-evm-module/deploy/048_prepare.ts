@@ -10,64 +10,38 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const hubControllerAddress = hre.helpers.contractDeployments.contracts['HubController'].evmAddress;
   const HubController = await hre.ethers.getContractAt('HubController', hubControllerAddress, deployer);
 
+  const agent = new hre.ethers.Wallet(
+    '0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a',
+    hre.ethers.provider,
+  );
+
+  const IdFactoryAddress = hre.helpers.contractDeployments.contracts['IdFactory'].evmAddress;
+  const IdFactory = await hre.ethers.getContractAt('IdFactory', IdFactoryAddress, agent);
+
   const claimIssuerPk = [
     '0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba', // account 5
     '0x92db14e403b83dfe3df233f83dfa3a0d7096f21ca9b0d6d6b8d88b2b4ec1564e', // account 6
     '0x4bbbf85ce3377467afe5d46f804f221813b2bb87f24d81f60f1fcdbf7cbf4356', // account 7
   ];
-  const walletClaimIssuerMap = {};
 
-  // deploy claim issuers
-  const claimIssuerPk1 = '0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba';
-  const claimIssuerPk2 = '0x92db14e403b83dfe3df233f83dfa3a0d7096f21ca9b0d6d6b8d88b2b4ec1564e';
-  const claimIssuerPk3 = '0x4bbbf85ce3377467afe5d46f804f221813b2bb87f24d81f60f1fcdbf7cbf4356';
+  let claimIssuer1;
 
-  const wallet1 = new hre.ethers.Wallet(claimIssuerPk1);
-  const claimIssuer1 = await hre.deployments.deploy('ClaimIssuer', {
-    from: deployer,
-    args: [wallet1.address],
-    log: true,
-  });
+  for (const i in claimIssuerPk) {
+    const wallet = new hre.ethers.Wallet(claimIssuerPk[i]);
+    const claimIssuer = await hre.deployments.deploy('ClaimIssuer', {
+      from: deployer,
+      args: [wallet.address],
+      log: true,
+    });
+    if (claimIssuer1 === undefined) {
+      claimIssuer1 = claimIssuer;
+    }
 
-  walletClaimIssuerMap[wallet1.address] = claimIssuer1.address;
+    await IdFactory.registerClaimIssuer(wallet.address, claimIssuer.address);
 
-  const wallet2 = new hre.ethers.Wallet(claimIssuerPk2);
-  const claimIssuer2 = await hre.deployments.deploy('ClaimIssuer', {
-    from: deployer,
-    args: [wallet2.address],
-    log: true,
-  });
-
-  walletClaimIssuerMap[wallet2.address] = claimIssuer2.address;
-
-  const wallet3 = new hre.ethers.Wallet(claimIssuerPk3);
-  const claimIssuer3 = await hre.deployments.deploy('ClaimIssuer', {
-    from: deployer,
-    args: [wallet3.address],
-    log: true,
-  });
-
-  walletClaimIssuerMap[wallet3.address] = claimIssuer3.address;
-
-  // for (const i in claimIssuerPk) {
-  //   const wallet = new hre.ethers.Wallet(claimIssuerPk[i]);
-  //   const claimIssuer = await hre.deployments.deploy('ClaimIssuer', {
-  //     from: deployer,
-  //     args: [wallet.address],
-  //     log: true,
-  //   });
-  //   if (claimIssuer1 === undefined) {
-  //     claimIssuer1 = claimIssuer;
-  //   }
-  //   walletClaimIssuerMap[wallet.address] = claimIssuer.address;
-  //   console.log(`Deployed Claim Issuer for wallet ${wallet.address} at address ${claimIssuer.address} !`);
-  //   console.log('--------------------------------------------------');
-  // }
-
-  const agent = new hre.ethers.Wallet(
-    '0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a',
-    hre.ethers.provider,
-  );
+    console.log(`Deployed Claim Issuer for wallet ${wallet.address} at address ${claimIssuer.address} !`);
+    console.log('--------------------------------------------------');
+  }
 
   console.log('Agent address', agent.address);
 
@@ -84,9 +58,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   );
 
   console.log('Context 1 deployed');
-
-  const IdFactoryAddress = hre.helpers.contractDeployments.contracts['IdFactory'].evmAddress;
-  const IdFactory = await hre.ethers.getContractAt('IdFactory', IdFactoryAddress, agent);
 
   console.log('IdFactory address:', IdFactory.address);
 
@@ -122,9 +93,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   //   const wallet = hre.ethers.Wallet.fromMnemonic(mnemonic, `m/44'/60'/0'/0/${index}`);
   //   accountKeyMap[account] = wallet.privateKey;
   // });
-
-  const filePath = '../app/src/assets/claimIssuerMap.json';
-  fs.writeFileSync(filePath, JSON.stringify(walletClaimIssuerMap, null, 2));
 };
 
 export default func;

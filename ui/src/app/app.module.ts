@@ -47,6 +47,8 @@ import {AceModule} from "ngx-ace-wrapper";
 import { ACE_CONFIG } from 'ngx-ace-wrapper';
 import { AceConfigInterface } from 'ngx-ace-wrapper';
 import {AccountComponent} from "./components/account/account.component";
+import {ClipboardModule} from "@angular/cdk/clipboard";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
 };
@@ -94,7 +96,9 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatChipsModule,
     MatSnackBarModule,
     MatSidenavModule,
-    LayoutModule
+    LayoutModule,
+    ClipboardModule,
+    MatTooltipModule
   ],
   providers: [EthereumService,
               ErrorHandlerService,

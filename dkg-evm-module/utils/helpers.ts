@@ -105,7 +105,7 @@ export class Helpers {
     const endpoint = process.env[`RPC_${this.hre.network.name.toUpperCase()}`];
     this.provider = new HttpProvider(endpoint);
 
-    this.repositoryPath = this._getGitRepositoryPath();
+    this.repositoryPath = ''; // this._getGitRepositoryPath();
 
     const deploymentsConfig = `./deployments/${this.hre.network.name}_contracts.json`;
 
@@ -370,8 +370,8 @@ export class Helpers {
       evmAddress: newContractAddress,
       substrateAddress: this.hre.network.name.startsWith('otp') ? this.convertEvmWallet(newContractAddress) : undefined,
       version: contractVersion,
-      gitBranch: this.getCurrentGitBranch(),
-      gitCommitHash: this.getCurrentGitCommitHash(),
+      gitBranch: '',
+      gitCommitHash: '',
       deploymentBlock: deploymentBlock,
       deploymentTimestamp: Date.now(),
       deployed: true,

@@ -668,6 +668,11 @@
         "type": "uint256"
       },
       {
+        "internalType": "string[]",
+        "name": "contexts",
+        "type": "string[]"
+      },
+      {
         "internalType": "bytes32",
         "name": "assertionId",
         "type": "bytes32"

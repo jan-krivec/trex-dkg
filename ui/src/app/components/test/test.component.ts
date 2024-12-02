@@ -12,6 +12,10 @@ import {DkgService} from "../../services/dkg.service";
 })
 export class TestComponent {
 
+  isEdit: boolean = false;
+  response: string  = '';
+  updateUal: string  = '';
+
   @ViewChild(AceComponent, { static: false }) componentRef?: AceComponent;
   public content: string = "";
 
@@ -22,19 +26,74 @@ export class TestComponent {
     showPrintMargin: false
   };
 
-  constructor(private dkgService: DkgService) { };
+  public readConfig: AceConfigInterface = {
+    mode: 'javascript',
+    theme: 'github',
+    readOnly: true,
+    showPrintMargin: false
+  }
 
-  editAgentForm= new FormGroup({
-    agentAddress: new FormControl('', [Validators.required])
+  get ual() {
+    return this.searchFormGroup.get('ual').value;
+  }
+
+  get sparql() {
+    return this.searchFormGroup.get('sparql').value;
+  }
+
+  set sparql(val) {
+    this.searchFormGroup.get('sparql').setValue(val);
+  }
+
+  public searchFormGroup = new FormGroup({
+    ual: new FormControl(''),
+    sparql: new FormControl(''),
   });
+
+  constructor(private dkgService: DkgService) { };
 
   onSubmit(event: any) {
     console.log(event);
   }
 
   async createAssertion() {
-    if (this.content != null || this.content !== "") {
-      await this.dkgService.createAssertion(this.content);
+    if (this.content != null) {
+      const content = this.content.trim();
+      if (content != "" ) {
+        const res = await this.dkgService.createAssertion(content);
+        this.response = JSON.stringify(res, null, 4);
+      }
+    }
+  }
+
+  async updateAssertion() {
+    if (this.content != null && this.updateUal != null) {
+      const content = this.content.trim();
+      const updateUal = this.updateUal.trim();
+      if (content != "") {
+        const res = await this.dkgService.updateAssertion(updateUal, content);
+        this.response = JSON.stringify(res, null, 4);
+      }
+    }
+  }
+
+  async readUal() {
+    if (this.ual != null) {
+      const ual = this.ual.trim();
+      if (ual != "") {
+          const res = await this.dkgService.readUal(ual);
+          this.response = JSON.stringify(res, null, 4);
+      }
+    }
+  }
+
+  async querySparql() {
+    if (this.sparql != null) {
+      const sparql = this.sparql.trim();
+      if (sparql != "") {
+        const res = await this.dkgService.querySparql(sparql);
+        this.response = JSON.stringify(res, null, 4);
+      }
     }
   }
 
@@ -94,5 +153,9 @@ export class TestComponent {
 "born": "1940-10-09",
 "spouse": "http://dbpedia.org/resource/Cynthia_Lennon"
 }`
+  }
+
+  ClearResponse() {
+    this.response = '';
   }
 }

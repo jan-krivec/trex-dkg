@@ -21,10 +21,14 @@ contract IdFactory is IIdFactory, HubDependent {
     // ONCHAINID of the wallet owner
     mapping(address => address) private _userIdentity;
 
+    // ONCHAINID of the wallet owner
+    mapping(address => address) private _claimIssuerMap;
+    address[] private _claimIssuers;
+
     // wallets currently linked to an ONCHAINID
     mapping(address => address[]) private _wallets;
 
-    // ONCHAINID of the token
+    // ONCHAINID of the asset
     mapping(address => address) private _assetIdentity;
 
     // asset linked to an ONCHAINID
@@ -174,6 +178,45 @@ contract IdFactory is IIdFactory, HubDependent {
             }
         }
         emit WalletUnlinked(_oldWallet, _identity);
+    }
+
+    function getClaimIssuers() external override view returns(Pair[] memory) {
+        Pair[] memory pairs = new Pair[](_claimIssuers.length);
+
+        for (uint256 i = 0; i < _claimIssuers.length; i++) {
+            address addr1 = _claimIssuers[i];
+            address addr2 = _claimIssuerMap[addr1];
+            pairs[i] = Pair(addr1, addr2);
+        }
+
+        return pairs;
+    }
+
+    function registerClaimIssuer(address add, address claimIssuerAdr) external onlyAgent override{
+        require(add != address(0), "invalid argument - zero address");
+        require(claimIssuerAdr != address(0), "invalid argument - claimIssuer zero address");
+        require(_claimIssuerMap[add] == address(0), "address already linked");
+
+        _claimIssuerMap[add] = claimIssuerAdr;
+        _claimIssuers.push(add);
+
+        emit ClaimIssuerRegistered(add, claimIssuerAdr);
+    }
+
+    function unregisterClaimIssuer(address add) external onlyAgent override{
+        require(add != address(0), "invalid argument - zero address");
+        require(_claimIssuerMap[add] != address(0), "claim issuer does not exist");
+
+        _claimIssuerMap[add] = address(0);
+        uint256 length = _claimIssuers.length;
+        for (uint256 i = 0; i < length; i++) {
+            if (_claimIssuers[i] == add) {
+                _claimIssuers[i] = _claimIssuers[length - 1];
+                _claimIssuers.pop();
+            }
+        }
+
+        emit ClaimIssuerUnregistered(add);
     }
 
     /**

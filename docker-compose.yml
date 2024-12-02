@@ -41,29 +41,10 @@ services:
       retries: 10
       start_period: 15s
 
-  node-service:
+  dkg-evm-module:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: ot-node
-    ports:
-      - "8900:8900"  # ot-node-docker application port
-    environment:
-      - NODE_ENV=development
-    volumes:
-      - ~/certs/:/root/certs/
-    networks:
-      - my-network
-    depends_on:
-      - mysql
-      - blazegraph
-    working_dir: /app/ot-node-docker  # Ensure the working directory is set to /app/ot-node-docker
-    entrypoint: [ "/bin/sh", "-c", "/bin/sleep 25 && chmod +x ./tools/local-network-setup/setup-linux-environment.sh && ./tools/local-network-setup/setup-linux-environment.sh --nodes=8" ]
-
-  hardhat-network:
-    build:
-      context: .
-      dockerfile: Dockerfile
+      dockerfile: dkg-evm-module.Dockerfile
     container_name: hardhat-network
     ports:
       - "8545:8545"  # ot-node-docker application port
@@ -78,6 +59,42 @@ services:
       npm run dev:v1 -- --port 9545 &
       wait
       "
+    networks:
+      - my-network
+
+  ot-node:
+    build:
+      context: .
+      dockerfile: ot-node.Dockerfile
+    container_name: ot-node
+    ports:
+      - "8900:8900"  # ot-node-docker application port
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ~/certs/:/root/certs/
+    networks:
+      - my-network
+    depends_on:
+      - mysql
+      - blazegraph
+      - dkg-evm-module
+    working_dir: /app/ot-node-docker  # Ensure the working directory is set to /app/ot-node-docker
+    entrypoint: [ "/bin/sh", "-c", "/bin/sleep 25 && chmod +x ./tools/local-network-setup/setup-linux-environment.sh && ./tools/local-network-setup/setup-linux-environment.sh --nodes=8" ]
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ui.Dockerfile
+    container_name: frontend
+    ports:
+      - "4200:4200"
+    expose:
+      - 4200
+    working_dir: /app/ui
+    depends_on:
+      - ot-node
+    command: ["npm", "start"]
     networks:
       - my-network
 

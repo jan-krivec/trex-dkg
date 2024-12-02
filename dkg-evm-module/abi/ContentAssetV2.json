@@ -307,6 +307,13 @@
   },
   {
     "inputs": [],
+    "name": "_checkOnlyAgent",
+    "outputs": [],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "assertionContract",
     "outputs": [
       {
@@ -509,6 +516,11 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "string[]",
+        "name": "contexts",
+        "type": "string[]"
+      },
       {
         "internalType": "bytes32",
         "name": "assertionId",
@@ -763,6 +775,11 @@
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
+      },
+      {
+        "internalType": "string[]",
+        "name": "contexts",
+        "type": "string[]"
       },
       {
         "internalType": "bytes32",

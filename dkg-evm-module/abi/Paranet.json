@@ -347,6 +347,13 @@
     "type": "event"
   },
   {
+    "inputs": [],
+    "name": "_checkOnlyAgent",
+    "outputs": [],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",

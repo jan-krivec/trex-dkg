@@ -26,6 +26,38 @@
         "internalType": "address",
         "name": "_addr",
         "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_claimIssuer",
+        "type": "address"
+      }
+    ],
+    "name": "ClaimIssuerRegistered",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_addr",
+        "type": "address"
+      }
+    ],
+    "name": "ClaimIssuerUnregistered",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_addr",
+        "type": "address"
       }
     ],
     "name": "Deployed",
@@ -191,6 +223,31 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getClaimIssuers",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "addr",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "claimIssuerAddr",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct IIdFactory.Pair[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -315,6 +372,24 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "add",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "claimIssuerAdr",
+        "type": "address"
+      }
+    ],
+    "name": "registerClaimIssuer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "_factory",
         "type": "address"
       }
@@ -333,6 +408,19 @@
       }
     ],
     "name": "unlinkWallet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "add",
+        "type": "address"
+      }
+    ],
+    "name": "unregisterClaimIssuer",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

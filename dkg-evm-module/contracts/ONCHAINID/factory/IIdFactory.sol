@@ -3,6 +3,12 @@ pragma solidity 0.8.17;
 
 interface IIdFactory {
 
+    struct Pair {
+        address addr;
+        address claimIssuerAddr;
+    }
+
+
     /// events
 
     // event emitted whenever a single contract is deployed by the factory
@@ -23,6 +29,9 @@ interface IIdFactory {
 
     // event emitted when a previously recorded token factory address is removed
     event TokenFactoryRemoved(address indexed factory);
+
+    event ClaimIssuerRegistered(address indexed _addr, address indexed _claimIssuer);
+    event ClaimIssuerUnregistered(address indexed _addr);
 
     /// functions
 
@@ -87,6 +96,21 @@ interface IIdFactory {
      *  _oldWallet cannot be address 0
      */
     function unlinkWallet(address _oldWallet) external;
+
+    function getClaimIssuers() external view returns(Pair[] memory);
+
+    /**
+     *  @dev function used to link a wallet to a claim issuer
+     *  @param add the address of the wallet
+     *  @param claimIssuerAdr claimIssuer address
+     */
+    function registerClaimIssuer(address add, address claimIssuerAdr) external;
+
+    /**
+     *  @dev function used to unlink a wallet to a claim issuer
+     *  @param add the address of the wallet
+     */
+    function unregisterClaimIssuer(address add) external;
 
     /**
      *  @dev function used to register an address as a token factory

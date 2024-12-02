@@ -5,6 +5,7 @@ import {Subject, Subscription} from "rxjs";
 import {Identity, IdentitySDK} from "@onchain-id/identity-sdk";
 import {ClaimDTO} from "../shared/identity.model";
 import {TrustedIssuerDTO} from "../components/context/trusted-issuers-registry/trusted-issuer.model";
+import {AccountDTO} from "../components/account/account.model";
 
 
 @Injectable({
@@ -57,6 +58,19 @@ export class DkgService extends EthereumService implements OnDestroy {
       const identityAddress = await this.dkg.identity.getIdentity(address);
       //
       return identityAddress;
+    } catch (e) {
+      this.errorHandlerService.displayError(e.data?.data?.reason ? e.data.data.reason : e.message);
+    }
+  }
+
+  async getClaimIssuers() {
+    try {
+      const claimIssuerArray = await this.dkg.identity.getClaimIssuers();
+
+      const claimIssuers = claimIssuerArray.map(x => {
+        return new AccountDTO(x[0], x[1], null);
+      })
+      return claimIssuers;
     } catch (e) {
       this.errorHandlerService.displayError(e.data?.data?.reason ? e.data.data.reason : e.message);
     }
@@ -316,10 +330,45 @@ export class DkgService extends EthereumService implements OnDestroy {
         { epochsNum: 2 }
       );
 
-      console.log(result);
       return result;
     } catch (e) {
       this.errorHandlerService.displayError(e.data?.data?.reason ? e.data.data.reason : e.message);
+    }
+  }
+
+  async updateAssertion(ual: string, content: string) {
+    try {
+      const jsonContent= JSON.parse(content);
+
+      const result = await this.dkg.asset.update(ual, {
+          public: jsonContent,
+        },
+        { epochsNum: 2 }
+      );
+
+      return result;
+    } catch (e) {
+      this.errorHandlerService.displayError(e.data?.data?.reason ? e.data.data.reason : e.message);
+    }
+  }
+
+  async readUal(ual: string ){
+    try {
+      const result = await this.dkg.asset.get(ual);
+      return result
+    } catch (e){
+      console.log(e);
+      return "";
+    }
+  }
+
+  async querySparql(sparql: string ){
+    try {
+      const result = await this.dkg.asset.query(sparql);
+      return result
+    } catch (e){
+      console.log(e);
+      return "";
     }
   }
 }

@@ -1,0 +1,92 @@
+<div fxLayout="column" fxLayoutAlign="center center" style="height: calc(100vh - 64px);">
+
+  <div fxLayout="row" style="width: 80vw;" fxLayout.xs="column" fxLayoutAlign="center center" fxLayoutGap="5%">
+    <div fxFlex="100%" fxFlex.gt-sm="60%" fxFlex.xs="100%">
+      <mat-card style="height: 600px">
+        <mat-card-header>
+          <mat-card-title>Test</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-slide-toggle style="margin: 10px 0"
+                            [(ngModel)]="isEdit">{{isEdit ? 'Update' : 'Read'}}</mat-slide-toggle>
+          <div class="car-tab" *ngIf="isEdit">
+              <div fxLayout="row" fxLayoutAlign="start start" fxFlex="auto">
+                <div fxFlex="60%">
+                  <ace class="query-field" style="height: 150px" [config]="config" [mode]="'javascript'" [theme]="'github'"
+                       [(value)]="content"></ace>
+                </div>
+                <div fxFlex="35%">
+                  <div style="margin-left: 10%" fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="5%">
+                    <div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="5%">
+                      <button mat-raised-button [disabled]="this.content == null && this.content != ''" (click)="this.createAssertion()" fxFlex="40%">Add Context</button>
+                      <button mat-raised-button (click)="this.clear()" fxFlex="40%">Clear</button>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="5%">
+                      <mat-form-field appearance="fill">
+                        <mat-label>UAL</mat-label>
+                        <input matInput [(ngModel)]="this.updateUal" required>
+                      </mat-form-field>
+                      <button mat-raised-button (click)="this.updateAssertion()" fxFlex="40%">Update</button>
+                    </div>
+                    <h2>Examples</h2>
+                    <button mat-raised-button (click)="this.addCarExample()" style="width: 40%">Person</button>
+                    <button mat-raised-button (click)="this.addDocumentExample()" style="width: 40%">Document</button>
+                    <button mat-raised-button (click)="this.addWebpageExample()" style="width: 40%">Web Page</button>
+                    <button mat-raised-button (click)="this.addPersonExample()" style="width: 40%">Person (no certs)
+                    </button>
+                  </div>
+                </div>
+              </div>
+          </div>
+
+
+          <div class="car-tab" *ngIf="!isEdit">
+            <form [formGroup]="this.searchFormGroup">
+              <div fxLayout="column" fxLayoutAlign="start center" fxFlex="auto">
+                <div style="height: 60%; width: 100%" fxFlex="row">
+                  <mat-form-field appearance="fill">
+                    <mat-label>UAL</mat-label>
+                    <input matInput formControlName="ual" required>
+                  </mat-form-field>
+                  <mat-card-title>Sparql query</mat-card-title>
+                  <ace class="test-field" style="height: 150px" [config]="config" [mode]="'javascript'" [theme]="'github'"
+                       [(value)]="sparql"></ace>
+
+                  <button mat-raised-button (click)="this.readUal()" style="width: 10%; margin-right: 10px; margin-top: 15px;">Read UAL</button>
+                  <button mat-raised-button (click)="this.querySparql()" style="width: 10%; margin-top: 15px;">Query SPARQL</button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div fxFlex="100%" fxFlex.gt-sm="35%" fxFlex.xs="100%">
+      <mat-card style="height: 600px">
+        <mat-card-header>
+          <mat-card-title>Response</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="car-tab" >
+              <div fxLayout="column" fxLayoutAlign="start center" fxFlex="auto">
+                <div style="height: 100%; width: 100%" fxFlex="row">
+                  <button mat-raised-button (click)="this.ClearResponse()" style="width: 20%; margin-bottom: 10px">Clear</button>
+                  <ace class="query-field" style="height: 150px" [config]="readConfig" [mode]="'javascript'" [theme]="'github'"
+                       [(value)]="response"></ace>
+                </div>
+              </div>
+          </div>
+
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </div>
+
+
+</div>

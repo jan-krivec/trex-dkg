@@ -292,6 +292,18 @@ body, html {
 
 .test-field {
   width: 100%; /* Fill the width of the container */
-  min-height: 40vh;
+  min-height: 26vh;
+  max-height: 50vh;
+}
+
+.query-field {
+  width: 100%; /* Fill the width of the container */
+  min-height: 38vh;
   max-height: 60vh;
+}
+
+.scrollable-list {
+  max-height: 60vh;         /* Set the max height of the list */
+  overflow-y: auto;          /* Enable vertical scrolling */
+  width: 100%;
 }
