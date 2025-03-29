@@ -54,7 +54,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
     const HubController = await hre.helpers.deploy({
       newContractName: 'HubController',
-      setContractInHub: false,
+      setContractInHub: true,
     });
 
     if (previousHubControllerAddress === null) {

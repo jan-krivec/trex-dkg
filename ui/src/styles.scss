@@ -1,27 +1,27 @@
-html {
-  font-size: 14px;
-}
+@use '@angular/material' as mat;
+@include mat.core();
 
-body {
-  font-family: var(--font-family);
-  font-weight: normal;
-  background: var(--surface-ground);
-  color: var(--text-color);
-  padding: 0rem;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+$theme-primary: mat.define-palette(mat.$indigo-palette);
+$theme-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 
-.card {
-  background: var(--surface-card);
-  padding: 2rem;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-}
+// The warn palette is optional (defaults to red).
+$theme-warn: mat.define-palette(mat.$red-palette);
 
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$theme: mat.define-light-theme((
+  color: (
+    primary: $theme-primary,
+    accent: $theme-accent,
+    warn: $theme-warn,
+  ),
+  typography: mat.define-typography-config(),
+));
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($theme);
 
 .card-content {
   display: flex;           /* Ensures the use of Flexbox */
@@ -31,9 +31,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin-top: 10px;        /* Additional styling */
 }
 
-.id-card {
-
-}
 
 
 .full-width {
@@ -71,11 +68,30 @@ mat-card-subtitle {
   padding: 10px; /* Adjust as needed */
   max-height: 300px; /* Adjust as needed */
   overflow-y: auto; /* Enable vertical scroll if content exceeds max height */
+  overflow-x: auto; /* Enable vertical scroll if content exceeds max height */
   width: 90%;
 }
 
 table {
   width: 100%;
+}
+
+.mat-column-key {
+  width: 250px !important;  /* Fixed width instead of percentage */
+  max-width: 200px !important;
+  padding-right: 24px !important;
+}
+
+.mat-column-id {
+  width: 250px !important;  /* Fixed width instead of percentage */
+  max-width: 250px !important;
+  padding-right: 24px !important;
+}
+
+.mat-column-data {
+  width: 250px !important;  /* Fixed width instead of percentage */
+  max-width: 250px !important;
+  padding-right: 24px !important;
 }
 
 mat-card-subtitle {
@@ -85,7 +101,6 @@ mat-card-subtitle {
 tr.example-detail-row {
   height: 0;
 }
-
 tr.example-element-row:not(.example-expanded-row):hover {
   background: whitesmoke;
 }
@@ -110,6 +125,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 
 .car-tab {
   margin-top: 10px;
+  height: 100%;
 }
 
 .example-element-diagram {
@@ -130,7 +146,7 @@ tr.example-element-row:not(.example-expanded-row):active {
 .example-element-description {
   padding: 8px;
   word-wrap: break-word; /* Add this line to enable word wrapping */
-  max-width: 80%;
+  max-width: 250px;
 }
 
 .example-element-description-attribution {
@@ -150,6 +166,50 @@ tr.example-element-row:not(.example-expanded-row):active {
 button[type="submit"] {
   align-self: flex-end; /* This will align the button to the end of its container */
   margin-right: 5%;
+}
+
+.submit-button {
+  align-self: flex-end; /* This will align the button to the end of its container */
+  margin-right: 5%;
+}
+.flex-container {
+  display: flex;
+  align-items: center;
+}
+
+.issuer-item {
+  max-width: 410px;
+}
+
+.mat-table-fixed {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.key-text {
+  display: inline-block;
+  max-width: calc(100% - 48px); /* Subtract space for button */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overflow-text {
+  display: inline-block;
+  margin-right: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 80%;
+}
+
+.overflow-text-2 {
+  display: inline-block;
+  margin-right: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 80%;
 }
 
 .router-outlet-container {
@@ -299,7 +359,7 @@ body, html {
 .query-field {
   width: 100%; /* Fill the width of the container */
   min-height: 38vh;
-  max-height: 60vh;
+  max-height: 100vh;
 }
 
 .scrollable-list {
@@ -307,3 +367,34 @@ body, html {
   overflow-y: auto;          /* Enable vertical scrolling */
   width: 100%;
 }
+
+.button-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically (if needed) */
+}
+
+.text-container {
+  max-width: 500px;
+}
+
+.text-overflow {
+  display: flex;
+  align-items: center;
+  max-width: 400px; /* Restrict text container width */
+}
+
+.dialog-text {
+  flex-grow: 1;
+  max-width: calc(100% - 64px); /* Adjust space for button */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-overflow button {
+  margin-left: 10px;
+  flex-shrink: 0;
+}
+

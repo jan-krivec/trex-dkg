@@ -128,7 +128,9 @@ class OTNode {
     }
 
     initializeLogger() {
-        this.logger = new Logger(this.config.logLevel);
+        const {appDataPath} = this.config;
+        const nodeName = appDataPath.replace('data', 'node');
+        this.logger = new Logger(this.config.logLevel, nodeName);
     }
 
     initializeFileService() {

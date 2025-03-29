@@ -12,6 +12,8 @@ import * as WEBIFC from "web-ifc";
 export interface ElementPropertiesUIState {
   components: OBC.Components;
   fragmentIdMap: FRAGS.FragmentIdMap;
+  tableDefinition: BUI.TableDataTransform;
+  getFunction: (expressId) => Promise<any>
 }
 
 const attrsToIgnore = ["OwnerHistory", "ObjectPlacement", "CompositionType"];
@@ -237,9 +239,90 @@ const getClassificationsRow = async (
   return row;
 };
 
+const processValue = (key, value): BUI.TableGroupData => {
+  // Base case: value is primitive (string, number, boolean, null)
+  if (value === null || typeof value !== 'object') {
+    return {
+      data: { Name: key, Value: value }
+    };
+  }
+
+  // Handle arrays and objects
+  const row: BUI.TableGroupData = {
+    data: { Name: key }
+  };
+
+  // Process children
+  if (Array.isArray(value)) {
+    // Handle array elements
+    row.children = value.map((item, index) => {
+      // For array items, use the index as the name if the item is an object
+      // Otherwise use the index and include the value
+      if (item === null || typeof item !== 'object') {
+        return {
+          data: { Name: `[${index}]`, Value: item }
+        };
+      } else {
+        // For objects in arrays, process each property
+        const arrayItemRow: BUI.TableGroupData = {
+          data: { Name: `[${index}]` }
+        };
+
+        const childRows = Object.keys(item).map(itemKey =>
+          processValue(itemKey, item[itemKey])
+        );
+
+        if (childRows.length > 0) {
+          arrayItemRow.children = childRows;
+        }
+
+        return arrayItemRow;
+      }
+    });
+  } else {
+    // Handle object properties
+    row.children = Object.keys(value).map(propKey =>
+      processValue(propKey, value[propKey])
+    );
+  }
+
+  return row;
+}
+
+const getCustomRow = async (getFunction, expressId) => {
+  const row: BUI.TableGroupData = {data: {Name: "Custom"}};
+  const data = await getFunction(expressId);
+  let graph = data['@graph']
+  // try {
+  //   if (graph.length > 0) {
+  //     graph = graph[0];
+  //   }
+  // }catch (e) {
+  //
+  // }
+
+  // for (const key of Object.keys(graph)) {
+  //   const valueRow: BUI.TableGroupData = {
+  //     data: { Name: key, Value: data[key] },
+  //   };
+  //   if (!row.children) row.children = [];
+  //   row.children.push(valueRow);
+  // }
+  for (const key of Object.keys(graph)) {
+    const value = graph[key];
+    const valueRow = processValue(key, value);
+
+    // Add to children array
+    if (!row.children) row.children = [];
+    row.children.push(valueRow);
+  }
+  return row;
+}
+
 const computeTableData = async (
   components: OBC.Components,
   fragmentIdMap: FRAGS.FragmentIdMap,
+  getFunction: (expressId) => Promise<any>
 ) => {
   const indexer = components.get(OBC.IfcRelationsIndexer);
   const fragments = components.get(OBC.FragmentsManager);
@@ -279,6 +362,7 @@ const computeTableData = async (
       const elementRow: BUI.TableGroupData = {
         data: {
           Name: elementAttrs['Name']?.value,
+          Actions: expressID
         },
       };
 
@@ -346,7 +430,7 @@ const computeTableData = async (
         if (materialRow.children) elementRow.children.push(materialRow);
 
         const classificationRelations = associateRelations.filter(
-          async (rel) => {
+          async (rel) => {table
             const relAttrs = await model.getProperties(rel);
             if (relAttrs) {
               const isClassification =
@@ -377,9 +461,19 @@ const computeTableData = async (
         });
         elementRow.children.push(attributesRow);
       }
+
+      const customRow = await getCustomRow(getFunction, expressID);
+      if (customRow != null) {
+        elementRow.children.push(customRow);
+      }
     }
   }
   return rows;
+};
+
+const baseStyle: Record<string, string> = {
+  padding: "0.25rem",
+  borderRadius: "0.25rem",
 };
 
 const onDataComputed = new Event("datacomputed");
@@ -389,7 +483,7 @@ let table: BUI.Table;
  * Heloooooooooo
  */
 export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
-  const { components, fragmentIdMap } = state;
+  const { components, fragmentIdMap , tableDefinition, getFunction } = state;
 
   if (!table) {
     table = document.createElement("bim-table");
@@ -403,10 +497,13 @@ export const elementPropertiesTemplate = (state: ElementPropertiesUIState) => {
     });
   }
 
-  computeTableData(components, fragmentIdMap).then((data) => {
+  computeTableData(components, fragmentIdMap, getFunction).then((data) => {
+    if (data.length > 1) {
+      data = [];
+    }
     table.data = data;
+    table.dataTransform = tableDefinition;
     if (data.length !== 0) table.dispatchEvent(onDataComputed);
   });
-
   return BUI.html`${table}`;
 };

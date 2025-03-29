@@ -1450,18 +1450,72 @@ class AssetOperationsManager {
     }
 
      extractContext(jsonContent) {
-        // Helper function to extract @context and ensure it's an array
-        const extractContext = (obj) => {
-            if (!obj || !obj['@context']) return [];
-            return Array.isArray(obj['@context']) ? obj['@context'] : [obj['@context']];
-        };
 
         // Check if the public property exists and use its context, otherwise use the top-level context
         if (jsonContent.public) {
-            return extractContext(jsonContent.public);
+            return this.extractContextUris(jsonContent.public);
         } 
-            return extractContext(jsonContent);
+            return this.extractContextUris(jsonContent);
         
+    }
+
+    extractContextUris(jsonLdData) {
+        // Ensure we're working with an object
+        const context = jsonLdData['@context'];
+        if (!context) return [];
+
+        const uris = new Set();
+
+        // Helper function to check and add URI
+        function addUri(potentialUri) {
+            if (typeof potentialUri === 'string' &&
+                (potentialUri.startsWith('http://') ||
+                    potentialUri.startsWith('https://') ||
+                    potentialUri.startsWith('urn:'))) {
+                uris.add(potentialUri);
+            }
+        }
+
+        // Handle different context formats
+        if (typeof context === 'string') {
+            // Single URL context
+            addUri(context);
+        } else if (Array.isArray(context)) {
+            // Array of contexts
+            context.forEach(item => {
+                if (typeof item === 'string') {
+                    addUri(item);
+                } else if (typeof item === 'object') {
+                    Object.values(item).forEach(value => {
+                        // Check string values
+                        if (typeof value === 'string') {
+                            addUri(value);
+                        }
+                        // Check object values with @id or @type
+                        if (typeof value === 'object') {
+                            if (typeof value['@id'] === 'string') addUri(value['@id']);
+                            if (typeof value['@type'] === 'string') addUri(value['@type']);
+                        }
+                    });
+                }
+            });
+        } else if (typeof context === 'object') {
+            // Object context
+            Object.values(context).forEach(value => {
+                // Direct string URIs
+                if (typeof value === 'string') {
+                    addUri(value);
+                }
+
+                // Object with @id or @type
+                if (typeof value === 'object') {
+                    if (typeof value['@id'] === 'string') addUri(value['@id']);
+                    if (typeof value['@type'] === 'string') addUri(value['@type']);
+                }
+            });
+        }
+
+        return Array.from(uris);
     }
 }
 

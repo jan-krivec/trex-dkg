@@ -7,13 +7,14 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const deployerSigner = await hre.ethers.getSigner(deployer);
 
   if (!hre.helpers.isDeployed('IdentityImplementation')) {
-    const identityImplementation = await new hre.ethers.ContractFactory(
-      OnchainID.contracts.Identity.abi,
-      OnchainID.contracts.Identity.bytecode,
-      deployerSigner,
-    ).deploy(deployerSigner.address, true);
 
-    const receipt = await identityImplementation.deployTransaction.wait();
+    const identityImplementation = await hre.helpers.deploy({
+      newContractName: 'Identity',
+      setContractInHub: false,
+      passHubInConstructor: false,
+      contract: 'contracts/ONCHAINID/Identity.sol:Identity',
+      additionalArgs: [deployerSigner.address, true],
+    });
 
     console.log(
       `Deployed identity implementation for wallet ${deployerSigner.address} at ${identityImplementation.address}`,

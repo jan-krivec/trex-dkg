@@ -1,7 +1,7 @@
 <div fxLayout="column" fxLayoutAlign="center center" style="height: calc(100vh - 64px);">
   <mat-card class="factory-card">
     <mat-card-header>
-      <mat-card-title>Agents</mat-card-title>
+      <mat-card-title>Add Context</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <div class="car-tab">
@@ -54,9 +54,9 @@
             </div>
 
             <div style="width: 90%" fxLayout="row" fxLayoutAlign="space-between center">
-              <button type="button" (click)="this.addClaimTopic()" mat-raised-button fxFlex="50%">Add Claim Topic
+              <button type="button" (click)="this.addClaimTopic()" mat-raised-button fxFlex="45%">Add Claim Topic
               </button>
-              <button style="margin-right: 0" type="button" (click)="this.addIssuer()" mat-raised-button fxFlex="50%">
+              <button style="margin-right: 0" type="button" (click)="this.addIssuer()" mat-raised-button fxFlex="45%">
                 Add Trusted Issuer
               </button>
             </div>
@@ -95,14 +95,10 @@
             </mat-card>
           </div>
 
-
-          <div style="width: 90%; margin-top: 15px" fxLayout="row" fxLayoutAlign="space-between center">
-            <button type="submit" mat-raised-button fxFlex="47.5%">Add Context
-            </button>
-          </div>
+          <div style="margin-top: 20px"></div>
+          <button type="submit" mat-raised-button>Add Context
+          </button>
         </form>
-
-        <mat-divider style="margin: 3% 0"></mat-divider>
 
       </div>
     </mat-card-content>

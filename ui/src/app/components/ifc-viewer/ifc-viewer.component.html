@@ -1,14 +1,7 @@
-<!--<div class="full-screen" id="container"></div>-->
-<!--<ifc-viewer-panel></ifc-viewer-panel>-->
-<!-- ifc-viewer.component.html -->
-<div class="viewer-container">
-  <div class="panel-container">
-    <bim-panel label="Element properties">
-      <div style="display: flex; justify-content: center">
-          <div style="width: 80%;">
-            <bim-button (click)="this.loadIfc()" label="Load IFC"></bim-button>
-          </div>
-      </div>
+<div class="viewer-container" fxLayout="row">
+  <div class="full-screen" id="container" style="width: calc(100% - 700px)"></div>
+  <div class="panel-container" style="width: 700px">
+    <bim-panel label="Element Properties" style="width: 680px">
       <bim-panel-section label="Element Data">
         <div style="display: flex; gap: 0.5rem;">
           <bim-button (click)="this.expandTable($event)"
@@ -24,6 +17,4 @@
       </bim-panel-section>
     </bim-panel>
   </div>
-  <div class="full-screen" id="container"></div>
-
 </div>

@@ -1,0 +1,53 @@
+<mat-stepper orientation="vertical" [linear]="true" #stepper>
+  <mat-step [stepControl]="this.firstFormGroup" errorMessage="Please select an operation.">
+    <form [formGroup]="this.firstFormGroup">
+      <ng-template matStepLabel>Add data</ng-template>
+      <div class="button-container">
+        <mat-button-toggle-group formControlName="firstCtrl" required  style="border: none" name="fontStyle" aria-label="Font Style">
+          <mat-button-toggle
+            style="border: 0.01rem solid black; border-radius: 10px; margin-right: 10px; "
+            *ngFor="let option of options"
+            [value]="option"
+            (click)="this.selectType(option)"
+          >{{ option }}</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <div style="margin-top: 10px">
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="selectedFormGroup">
+    <form [formGroup]="selectedFormGroup">
+      <ng-template matStepLabel>Fill out your address</ng-template>
+      <div style="margin-top: 20px; margin-bottom: 20px">
+        <h3>Add {{selectedOption}} data</h3>
+      </div>
+      <mat-form-field *ngFor="let controlName of getFormControls()" appearance="fill">
+        <mat-label>{{ controlName }}</mat-label>
+
+        <!-- Check if the control has type 'select' -->
+        <mat-select *ngIf="isSelectControl(this.getControl(controlName))" formControlName="{{ controlName }}">
+          <mat-option *ngFor="let option of selectedFormGroup?.controls[controlName].value.options" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-select>
+
+        <!-- Default to input if it's not a select -->
+        <input *ngIf="!isSelectControl(selectedFormGroup?.controls[controlName])" matInput formControlName="{{ controlName }}">
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    <p>You are now done.</p>
+    <div>
+      <button mat-button (click)="addAlarm()">add alarm</button>
+      <button mat-button>Reset</button>
+    </div>
+  </mat-step>
+</mat-stepper>

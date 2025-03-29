@@ -103,7 +103,7 @@ class ContextOperationsManager {
 
         const {claimTopicsRegistry} = await this.blockchainService.callContractFunction(
             'Context',
-                'adresses',
+            'adresses',
             [],
             blockchain,
             contextAddress
@@ -265,13 +265,46 @@ class ContextOperationsManager {
             contextAddress
         );
 
-        await this.blockchainService.executeContractFunction(
+        const receipt = await this.blockchainService.executeContractFunction(
             'TrustedIssuersRegistry',
             'addTrustedIssuer',
             [claimIssuer, claimTopics],
             blockchain,
             trustedIssuersRegistry
         )
+        return receipt;
+    }
+
+    /**
+     * Adds claim topic to context.
+     * @async
+     * @param {string} context - Context
+     * @param {string} claimIssuer - Claim issuer address
+     * @param {number[]} claimTopic - Context details
+     * @param {Object} [options={}] - Additional options for asset creation.
+     * @returns {Object}
+     */
+    async updateTrustedIssuer(context, claimIssuer, claimTopics, options = {}) {
+        const blockchain = this.inputService.getBlockchain(options);
+
+        const contextAddress = this.blockchainService.getContextAddress(context, blockchain);
+
+        const {trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
+            'Context',
+            'adresses',
+            [],
+            blockchain,
+            contextAddress
+        );
+
+        const receipt = await this.blockchainService.executeContractFunction(
+            'TrustedIssuersRegistry',
+            'updateTrustedIssuer',
+            [claimIssuer, claimTopics],
+            blockchain,
+            trustedIssuersRegistry
+        )
+        return receipt;
     }
 
     /**
@@ -295,13 +328,14 @@ class ContextOperationsManager {
             contextAddress
         );
 
-        await this.blockchainService.executeContractFunction(
+        const receipt = await this.blockchainService.executeContractFunction(
             'TrustedIssuersRegistry',
             'removeTrustedIssuer',
             [claimIssuer],
             blockchain,
             trustedIssuersRegistry
         )
+        return receipt;
     }
 
     mapClaimIssuersToDetails(claimIssuers) {

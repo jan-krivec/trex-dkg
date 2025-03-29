@@ -1,5 +1,5 @@
 <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center start" fxLayoutGap="5%">
-  <mat-card fxFlex="30%" class="factory-card">
+  <mat-card class="factory-card" style="width: 540px">
     <mat-card-header>
       <mat-card-title>Trusted Issuers</mat-card-title>
     </mat-card-header>
@@ -7,8 +7,13 @@
       <mat-list>
         <mat-list-item style="font-weight: bold" *ngFor="let ci of claimIssuers">
           <mat-icon matListItemIcon>circle</mat-icon>
-          <div matListItemTitle>{{ci.account}}</div>
-          <div matListItemLine>{{ci.privateKey}}</div>
+          <div matListItemTitle class="issuer-item">{{ ci.account }}</div>
+          <div matListItemLine class="issuer-item flex-container">
+            <span class="overflow-text">Issuer address: {{ ci.privateKey }}</span>
+            <button mat-icon-button [cdkCopyToClipboard]="ci.privateKey" matTooltip="Copy issuer address" color="primary">
+              <mat-icon>file_copy</mat-icon>
+            </button>
+          </div>
         </mat-list-item>
       </mat-list>
     </mat-card-content>
@@ -16,7 +21,7 @@
 
 
 
-<mat-card fxFlex="45%" class="factory-card">
+<mat-card style="width: 625px" class="factory-card">
   <mat-card-header>
     <mat-card-title>Preprepared Accounts</mat-card-title>
   </mat-card-header>
@@ -43,23 +48,7 @@
             </div>
           </mat-list>
         </div>
-
-<!--        <div style="width: 90%">-->
-<!--          <mat-list>-->
-<!--            <div *ngFor="let claimIssuer of this.claimIssuers">-->
-<!--              <mat-list-item>Item 1</mat-list-item>-->
-<!--              <mat-divider></mat-divider>-->
-<!--            </div>-->
-<!--            -->
-<!--            <mat-list-item>Item 2</mat-list-item>-->
-<!--            <mat-divider></mat-divider>-->
-<!--            <mat-list-item>Item 3</mat-list-item>-->
-<!--          </mat-list>-->
-<!--        </div>-->
       </div>
-
-      <mat-divider style="margin: 3% 0"></mat-divider>
-
     </div>
   </mat-card-content>
 </mat-card>

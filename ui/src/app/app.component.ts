@@ -1,21 +1,35 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {NavItem} from "./shared/nav-item";
 import {MatSidenav} from "@angular/material/sidenav";
+import {EthereumService} from "./services/ethereum.service";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'app';
   _isExpanded: boolean = false;
+  _ethereumService: EthereumService;
 
   @ViewChild('sidenav') sidenav: MatSidenav;
   isExpanded = true;
   showSubmenu: boolean = false;
   isShowing = false;
   showSubSubMenu: boolean = false;
+
+  ngOnInit() {
+    this._ethereumService.checkIsConected();
+  }
+
+  get isConnected() {
+    return this._ethereumService.isConnected;
+  }
+
+  connectMetamask() {
+    this._ethereumService.requestAccountAccess();
+  }
 
   mouseenter() {
     if (!this.isExpanded) {
@@ -29,45 +43,9 @@ export class AppComponent {
     }
   }
 
-  navItems: NavItem[] = [
-    {
-      displayName: 'Identity',
-      iconName: 'person',
-      route: 'identity'
-    },
-    {
-      displayName: 'Dkg Agents',
-      iconName: 'recent_actors',
-      route: 'dkgAgent'
-    },
-    {
-      displayName: 'Add Context',
-      iconName: 'library_add',
-      route: 'addContext',
-    },
-    {
-      displayName: 'Context',
-      iconName: 'speaker_notes',
-      route: 'context',
-      children: [
-        {
-          displayName: 'Issuers Registry',
-          iconName: 'recent_actors',
-          route: 'context/issuersRegistry'
-        },
-        {
-          displayName: 'Identity Registry',
-          iconName: 'recent_actors',
-          route: 'context/identityRegistry'
-        },
-        {
-          displayName: "Topics Registry",
-          iconName: 'recent_actors',
-          route: 'context/topicsRegistry'
-        },
-      ]
-    }
-  ];
+  constructor(ethereumService: EthereumService) {
+    this._ethereumService = ethereumService;
+  }
 
-  constructor() {}
+
 }

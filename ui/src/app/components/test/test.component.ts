@@ -6,6 +6,11 @@ import 'brace/mode/javascript';
 import 'brace/theme/github';
 import {DkgService} from "../../services/dkg.service";
 
+interface HistoryOption {
+  value: string;
+  viewValue: string;
+}
+
 @Component({
   selector: 'app-test',
   templateUrl: './test.component.html'
@@ -15,8 +20,15 @@ export class TestComponent {
   isEdit: boolean = false;
   response: string  = '';
   updateUal: string  = '';
+  historical: boolean = false;
+  historyOptions: HistoryOption[] = [
+    {value: 'LATEST', viewValue: 'Latest'},
+    {value: 'LATEST_FINALIZED', viewValue: 'Latest finalized'},
+    {value: 'HISTORICAL', viewValue: 'Historical'},
+  ]
+  selHistoryOption = this.historyOptions[0].value;
 
-  @ViewChild(AceComponent, { static: false }) componentRef?: AceComponent;
+  @ViewChild('edit', { static: false }) componentRef?: AceComponent;
   public content: string = "";
 
   public config: AceConfigInterface = {
@@ -47,6 +59,9 @@ export class TestComponent {
 
   public searchFormGroup = new FormGroup({
     ual: new FormControl(''),
+    historyOption: new FormControl({value: '', disabled: true}),
+    historical: new FormControl(false),
+    queryType: new FormControl('SELECT', Validators.required),
     sparql: new FormControl(''),
   });
 
@@ -81,7 +96,8 @@ export class TestComponent {
     if (this.ual != null) {
       const ual = this.ual.trim();
       if (ual != "") {
-          const res = await this.dkgService.readUal(ual);
+          const state = ['LATEST', 'LATEST_FINALIZED'].includes(this.selHistoryOption) ? this.selHistoryOption : this.searchFormGroup.get('historyOption').value
+          const res = await this.dkgService.readUal(ual, state);
           this.response = JSON.stringify(res, null, 4);
       }
     }
@@ -91,7 +107,7 @@ export class TestComponent {
     if (this.sparql != null) {
       const sparql = this.sparql.trim();
       if (sparql != "") {
-        const res = await this.dkgService.querySparql(sparql);
+        const res = await this.dkgService.querySparql(sparql, this.searchFormGroup.get('queryType').value, this.searchFormGroup.get('historical').value);
         this.response = JSON.stringify(res, null, 4);
       }
     }
@@ -104,6 +120,15 @@ export class TestComponent {
     ) {
       this.componentRef.directiveRef.clear();
     }
+  }
+
+  onSelectionChange(event): void {
+    if (['LATEST', 'LATEST_FINALIZED'].includes(this.selHistoryOption)) {
+      this.searchFormGroup.get('historyOption')?.disable();
+    } else {
+      this.searchFormGroup.get('historyOption')?.enable();
+    }
+    this.searchFormGroup.get('historyOption')?.setValue(null);
   }
 
   addCarExample() {

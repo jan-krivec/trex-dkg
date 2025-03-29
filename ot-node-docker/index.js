@@ -4,6 +4,9 @@ import fs from 'fs-extra';
 import OTNode from './ot-node.js';
 import { NODE_ENVIRONMENTS } from './src/constants/constants.js';
 
+const originalConsoleLog = console.log;
+const originalConsoleInfo = console.info;
+
 process.env.NODE_ENV =
     process.env.NODE_ENV && Object.values(NODE_ENVIRONMENTS).includes(process.env.NODE_ENV)
         ? process.env.NODE_ENV
@@ -16,6 +19,31 @@ process.env.NODE_ENV =
             const configurationFilename = process.argv[2];
             userConfig = JSON.parse(await fs.promises.readFile(process.argv[2]));
             userConfig.configFilename = configurationFilename;
+
+            const appDataPath = userConfig.appDataPath;
+            const nodeName = appDataPath.replace('data', 'node');
+
+            console.log(nodeName);
+
+            console.log = function(...args) {
+                const prefix = `[${nodeName || 'unknown'}]`;
+                originalConsoleLog(prefix, ...args);
+            };
+
+            console.info = function(...args) {
+                const prefix = `[${nodeName || 'unknown'}]`;
+                originalConsoleInfo(prefix, ...args);
+            };
+
+            console.error = function(...args) {
+                const prefix = `[${nodeName || 'unknown'}]`;
+                originalConsoleInfo(prefix, ...args);
+            };
+
+            console.debug = function(...args) {
+                const prefix = `[${nodeName || 'unknown'}]`;
+                originalConsoleInfo(prefix, ...args);
+            };
         }
     } catch (error) {
         console.log('Unable to read user configuration from file: ', process.argv[2]);

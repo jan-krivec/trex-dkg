@@ -49,6 +49,11 @@ import { AceConfigInterface } from 'ngx-ace-wrapper';
 import {AccountComponent} from "./components/account/account.component";
 import {ClipboardModule} from "@angular/cdk/clipboard";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {ClaimDataDialogComponent} from "./components/identity/claim-data-dialog.component";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatRadioModule} from "@angular/material/radio";
+import {IfcViewerDetailCompontent} from "./components/ifc-viewer/ifc-viewer-detail.compontent";
+import {MatStepperModule} from '@angular/material/stepper';
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
 };
@@ -66,7 +71,9 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     IfcViewerComponent,
     ContextDetailComponent,
     TestComponent,
-    AccountComponent
+    AccountComponent,
+    ClaimDataDialogComponent,
+    IfcViewerDetailCompontent
   ],
   imports: [
     AceModule,
@@ -98,7 +105,10 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatSidenavModule,
     LayoutModule,
     ClipboardModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatStepperModule
   ],
   providers: [EthereumService,
               ErrorHandlerService,

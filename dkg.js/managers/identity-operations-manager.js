@@ -183,6 +183,30 @@ class IdentityOperationsManager {
         return keys.map(k => ({key: k.key, type: this.mapKeyToType(k.keyType), purpose:k.purposes.map(this.mapKeyToPurpose)}));
     }
 
+    /**
+     * Creates a new identity.
+     * @async
+     * @param {string} address - The address of the wallet, for whichs identity a key will be added
+     * @param {number} topic - Keytype to create
+     * @param {Object} [options={}] - Additional options for asset creation.
+     * @returns {Object}
+     */
+    async getClaimsByTopic(address, topic, options = {}) {
+        const blockchain = this.inputService.getBlockchain(options);
+
+        const identityAddress = await this.getIdentity(address);
+
+        const claimList = await this.blockchainService.callContractFunction(
+            'Identity',
+            'getClaimIdsByTopic',
+            [topic || 0],
+            blockchain,
+            identityAddress
+        )
+
+        return claimList;
+    }
+
 
     mapPurposeToKey(keyPurpose) {
         switch (keyPurpose) {

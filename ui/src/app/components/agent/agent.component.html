@@ -1,30 +1,48 @@
-<div fxLayout="column" fxLayoutAlign="center center" style="height: calc(100vh - 64px);">
-<mat-card class="factory-card">
-  <mat-card-header>
-    <mat-card-title>Agents</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="car-tab">
+<div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center start" fxLayoutGap="5%">
+  <mat-card fxFlex="30%" class="factory-card">
+    <mat-card-header>
+      <mat-card-title>Agents</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item style="font-weight: bold" *ngFor="let agent of agents">
+          <mat-icon matListItemIcon>circle</mat-icon>
+          <span class="overflow-text-2">{{agent}}</span>
+          <button mat-icon-button [cdkCopyToClipboard]="agent" matTooltip="Copy agent address" color="primary">
+            <mat-icon>file_copy</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
 
-      <form class="center-content" [formGroup]="editAgentForm">
+  <mat-card fxFlex="45%" class="factory-card">
+    <mat-card-header>
+      <mat-card-title>Edit Agents</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="car-tab">
 
-        <div style="width: 90%">
-          <div>
-            <mat-form-field fxFlex="100%">
-              <mat-label>Agent Address</mat-label>
-              <input matInput type="text" formControlName="agentAddress">
-            </mat-form-field>
+        <div class="center-content" [formGroup]="editAgentForm">
+
+          <div style="width: 90%">
+            <div>
+              <mat-form-field fxFlex="100%">
+                <mat-label>Agent Address</mat-label>
+                <input matInput type="text" formControlName="agentAddress">
+              </mat-form-field>
+            </div>
+          </div>
+          <div style="width: 90%" fxLayout="row" fxLayoutAlign="space-between center">
+            <button (click)="addAgent()" mat-raised-button fxFlex="50%">Add Agent</button>
+            <button (click)="removeAgent()" mat-raised-button fxFlex="50%">Delete Agent</button>
           </div>
         </div>
-        <div style="width: 90%" fxLayout="row" fxLayoutAlign="space-between center">
-          <button type="submit" mat-raised-button fxFlex="50%">Add Agent</button>
-          <button type="submit" mat-raised-button fxFlex="50%">Delete Agent</button>
-        </div>
-      </form>
 
-      <mat-divider style="margin: 3% 0"></mat-divider>
+        <mat-divider style="margin: 3% 0"></mat-divider>
 
-    </div>
-  </mat-card-content>
-</mat-card>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
 </div>

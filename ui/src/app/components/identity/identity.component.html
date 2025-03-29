@@ -44,12 +44,17 @@
               <div class="center-content">
 
                 <section class="table-container mat-elevation-z8" tabindex="0">
-                  <table mat-table [dataSource]="keyDTOS">
+                  <table mat-table [dataSource]="keyDTOS"  class="mat-table-fixed">
 
                     <!-- Name Column -->
                     <ng-container matColumnDef="key">
                       <th mat-header-cell *matHeaderCellDef> Key</th>
-                      <td mat-cell *matCellDef="let element"> {{element.key}} </td>
+                      <td mat-cell *matCellDef="let element">
+                        <span class="key-text">{{element.key}}</span>
+                        <button mat-icon-button [cdkCopyToClipboard]="element.key" matTooltip="Copy key">
+                          <mat-icon>file_copy</mat-icon>
+                        </button>
+                      </td>
                     </ng-container>
 
                     <!-- Name Column -->
@@ -82,6 +87,12 @@
                 <mat-form-field>
                   <mat-label>Address</mat-label>
                   <input formControlName="address" matInput>
+                  <button type="button" mat-icon-button matSuffix
+                    [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="isEditClaim"
+                    (click)="this.useOwnAddress(addKeyForm)">
+                    <mat-icon svgIcon="metamask" aria-hidden="false"></mat-icon>
+                  </button>
                 </mat-form-field>
               </div>
               <div style="width: 90%">
@@ -112,6 +123,12 @@
                   <mat-form-field>
                     <mat-label>Address</mat-label>
                     <input matInput formControlName="address">
+                    <button type="button" mat-icon-button matSuffix
+                            [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="isEditClaim"
+                            (click)="this.useOwnAddress(deleteKeyForm)">
+                      <mat-icon svgIcon="metamask" aria-hidden="false"></mat-icon>
+                    </button>
                   </mat-form-field>
                 </div>
                 <div style="width: 90%">
@@ -179,12 +196,17 @@
               <div class="center-content">
 
                 <section class="table-container mat-elevation-z8" tabindex="0">
-                  <table mat-table [dataSource]="claimDTOS" multiTemplateDataRows>
+                  <table mat-table [dataSource]="claimDTOS" multiTemplateDataRows class="mat-table-fixed">
 
                     <!-- Name Column -->
                     <ng-container matColumnDef="id">
                       <th mat-header-cell *matHeaderCellDef> Id</th>
-                      <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                      <td mat-cell *matCellDef="let element">
+                        <span class="key-text">{{element.id}}</span>
+                        <button mat-icon-button [cdkCopyToClipboard]="element.id" matTooltip="Copy Id">
+                          <mat-icon>file_copy</mat-icon>
+                        </button>
+                      </td>
                     </ng-container>
 
                     <!-- Name Column -->
@@ -196,43 +218,27 @@
                     <!-- Symbol Column -->
                     <ng-container matColumnDef="data">
                       <th mat-header-cell *matHeaderCellDef> Data</th>
-                      <td mat-cell *matCellDef="let element"> {{element.data}} </td>
+                      <td mat-cell *matCellDef="let element">
+                        <span class="key-text">{{element.data}}</span>
+                        <button mat-icon-button [cdkCopyToClipboard]="element.data" matTooltip="Copy data">
+                          <mat-icon>file_copy</mat-icon>
+                        </button>
+                      </td>
                     </ng-container>
 
                     <ng-container matColumnDef="expand">
                       <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
                       <td mat-cell *matCellDef="let element">
-                        <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
-                          <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
-                          <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+                        <button mat-icon-button aria-label="expand row" (click)="(openDialog(element)); $event.stopPropagation()">
+                          <mat-icon>search</mat-icon>
                         </button>
-                      </td>
-                    </ng-container>
-
-                   <ng-container matColumnDef="expandedDetail">
-                      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumnsClaim.length">
-                        <div class="example-element-detail"
-                             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                          <div class="example-element-description">
-                            ONCHAINID: {{element.onchainId}}
-                          </div>
-                          <div class="example-element-description">
-                            Issuer: {{element.issuer}}
-                          </div>
-                          <div class="example-element-description">
-                            Signature: {{element.signature}}
-                          </div>
-                        </div>
                       </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumnsClaim; sticky: true"></tr>
                     <tr mat-row *matRowDef="let element; columns: displayedColumnsClaimExpanded;"
-                        class="example-element-row"
-                        [class.example-expanded-row]="expandedElement === element"
-                        (click)="expandedElement = expandedElement === element ? null : element">
+                        class="example-element-row">
                     </tr>
-                    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
                   </table>
                 </section>
 
@@ -290,6 +296,12 @@
                   <mat-form-field>
                     <mat-label>Address</mat-label>
                     <input matInput formControlName="address">
+                    <button type="button" mat-icon-button matSuffix
+                            [attr.aria-label]="'Hide password'"
+                            [attr.aria-pressed]="isEditClaim"
+                            (click)="this.useOwnAddress(deleteClaimForm)">
+                      <mat-icon svgIcon="metamask" aria-hidden="false"></mat-icon>
+                    </button>
                   </mat-form-field>
                 </div>
                 <div style="width: 90%">

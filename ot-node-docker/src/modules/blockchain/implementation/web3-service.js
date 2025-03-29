@@ -72,8 +72,6 @@ class Web3Service {
         this.config = config;
         this.logger = logger;
         this.contractCallCache = {};
-        console.log('InitializeWeb3 znotraj initialize')
-        console.log(config);
         await this.initializeWeb3();
         this.initializeTransactionQueues();
         this.startBlock = await this.getBlockNumber();
@@ -188,12 +186,8 @@ class Web3Service {
 
     async initializeWeb3() {
         const providers = [];
-        console.log('Rpc endpoints');
-        console.log(this.config.rpcEndpoints);
         for (const rpcEndpoint of this.config.rpcEndpoints) {
-            console.log('Is web socket: ')
             const isWebSocket = rpcEndpoint.startsWith('ws');
-            console.log('Is web socket: ', isWebSocket);
             const Provider = isWebSocket
                 ? ethers.providers.WebSocketProvider
                 : ethers.providers.JsonRpcProvider;
@@ -1488,7 +1482,6 @@ class Web3Service {
     }
 
     async restartService() {
-        console.log('InitializeWeb3 znotraj restartService')
         await this.initializeWeb3();
         await this.initializeContracts();
     }

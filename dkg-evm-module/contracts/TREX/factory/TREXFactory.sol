@@ -96,14 +96,6 @@ contract TREXFactory is ITREXFactory, HubDependent {
     string[] public contextKeys;
     mapping(string => uint256) private keyIndex;
 
-    // Adds a new context
-    function addContext(string memory key, address addr) public {
-        require(contextDeployed[key] == address(0), "Key already exists");
-
-        contextDeployed[key] = addr;
-
-    }
-
     // Removes an existing context
     function removeContext(string memory key) public {
         require(contextDeployed[key] != address(0), "Key does not exist");
@@ -190,7 +182,6 @@ contract TREXFactory is ITREXFactory, HubDependent {
             tir.addTrustedIssuer(msg.sender, (_claimData).issuers[i], _claimData.issuerClaims[i]);
         }
         irs.bindIdentityRegistry(address(ir));
-
         for (uint256 i = 0; i < (_contextDetails.complianceModules).length; i++) {
             if (!mc.isModuleBound(_contextDetails.complianceModules[i])) {
                 mc.addModule(msg.sender, _contextDetails.complianceModules[i]);
@@ -199,9 +190,7 @@ contract TREXFactory is ITREXFactory, HubDependent {
                 mc.callModuleFunction(msg.sender, _contextDetails.complianceSettings[i], _contextDetails.complianceModules[i]);
             }
         }
-
         contextDeployed[_context] = address(context);
-
         emit TREXSuiteDeployed(address(context), address(mc), _context);
     }
 

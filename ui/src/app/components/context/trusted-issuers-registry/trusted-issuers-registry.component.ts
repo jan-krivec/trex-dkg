@@ -15,16 +15,12 @@ export class TrustedIssuersRegistryComponent implements OnInit{
 
   addTrustedIssuerGroup = new FormGroup({
     address: new FormControl('', [Validators.required]),
-    addClaimTopic: new FormControl(null, [Validators.required]),
+    addClaimTopic: new FormControl(null),
     claimTopics: new FormControl([], [Validators.required])
   });
 
-  addTrustedIssuerForm= new FormGroup({
-    topic: new FormControl(null, [Validators.required])
-  });
-
   removeTrustedIssuerForm= new FormGroup({
-    topic: new FormControl(null, [Validators.required])
+    address: new FormControl(null, [Validators.required])
   });
 
   subscription: Subscription;
@@ -79,10 +75,17 @@ export class TrustedIssuersRegistryComponent implements OnInit{
 
   async addTrustedIssuer() {
     await this.dkgService.addTrustedIssuer(this.context, this.addTrustedIssuerGroup.get('address').value, this.addTrustedIssuerGroup.get('claimTopics').value);
+    this.addTrustedIssuerGroup.reset();
   }
 
-  async removeTrustedIssuer(address: string) {
-    await this.dkgService.removeTrustedIssuer(this.context, address);
+  async updateTrustedIssuer() {
+    await this.dkgService.updateTrustedIssuer(this.context, this.addTrustedIssuerGroup.get('address').value, this.addTrustedIssuerGroup.get('claimTopics').value);
+    this.addTrustedIssuerGroup.reset();
+  }
+
+  async removeTrustedIssuer() {
+    await this.dkgService.removeTrustedIssuer(this.context, this.removeTrustedIssuerForm.get('address').value);
+    this.removeTrustedIssuerForm.reset();
   }
 
   deleteClaimTopic(claimTopic: number) {

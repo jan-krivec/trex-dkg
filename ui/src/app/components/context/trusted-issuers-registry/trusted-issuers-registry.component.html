@@ -9,7 +9,7 @@
         <mat-list-item style="font-weight: bold" *ngFor="let ti of trustedIssuers">
           <mat-icon matListItemIcon>circle</mat-icon>
           <div matListItemTitle>{{ti.address}}</div>
-          <div matListItemLine>{{ti.claimTopics.toString()}}</div>
+          <div matListItemLine>Claim Topics: {{ti.claimTopics.join(', ')}}</div>
         </mat-list-item>
       </mat-list>
     </mat-card-content>
@@ -23,7 +23,7 @@
       <div class="car-tab">
         <mat-card-subtitle class="subtitle">Add Trusted Issuer</mat-card-subtitle>
 
-        <form class="center-content" [formGroup]="this.addTrustedIssuerGroup" (ngSubmit)="this.addTrustedIssuer()">
+        <div class="center-content" [formGroup]="this.addTrustedIssuerGroup">
 
           <div style="width: 90%">
             <mat-form-field fxFlex="100%">
@@ -64,24 +64,30 @@
             </mat-card>
           </div>
 
-          <button type="submit" mat-raised-button>Add Trusted Issuer</button>
+          <div fxLayout="row" style="width: 90%" fxLayoutAlign="end start" fxLayoutGap="2%">
+            <button (click)="this.addTrustedIssuer()" mat-raised-button>Add Trusted Issuer</button>
+            <button (click)="this.updateTrustedIssuer()" mat-raised-button>Update Trusted Issuer</button>
+<!--            <button mat-raised-button [disabled]="this.content == null && this.content != ''" (click)="this.createAssertion()" fxFlex="40%">Add Context</button>-->
+<!--            <button mat-raised-button (click)="this.clear()" fxFlex="40%">Clear</button>-->
+          </div>
 
-        </form>
+
+        </div>
 
         <mat-divider style="margin: 3% 0"></mat-divider>
 
-        <mat-card-subtitle class="subtitle">Remove Claim Topic</mat-card-subtitle>
+        <mat-card-subtitle class="subtitle">Remove Trusted Issuer</mat-card-subtitle>
 
-        <form class="center-content">
+        <form [formGroup]="this.removeTrustedIssuerForm" (ngSubmit)="this.removeTrustedIssuer()" class="center-content">
 
-          <!--          <div style="width: 90%">-->
-          <!--            <mat-form-field fxFlex="100%">-->
-          <!--              <mat-label>Claim Topic</mat-label>-->
-          <!--              <input matInput formControlName="topic" type="number">-->
-          <!--            </mat-form-field>-->
-          <!--          </div>-->
+                    <div style="width: 90%">
+                      <mat-form-field fxFlex="100%">
+                        <mat-label>Address</mat-label>
+                        <input matInput formControlName="address" type="text">
+                      </mat-form-field>
+                    </div>
 
-          <button type="submit" mat-raised-button>Remove Claim Topic</button>
+          <button type="submit" mat-raised-button>Remove Trusted Issuer</button>
 
         </form>
 

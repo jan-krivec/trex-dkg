@@ -2,7 +2,9 @@
   <button mat-icon-button (click)="isExpanded = !isExpanded">
     <mat-icon>menu</mat-icon>
   </button>
-  <h1 class="example-app-name">Nested Menus</h1>
+  <h1 class="example-app-name">Trex-DKG</h1>
+  <span style="flex: 1 1 auto"></span>
+  <button *ngIf="!this.isConnected" (click)="this.connectMetamask()" style="border-radius: 20px" mat-raised-button>Connect Metamask</button>
 </mat-toolbar>
 <mat-sidenav-container class="example-container" autosize>
   <mat-sidenav #sidenav class="example-sidenav" mode="side" opened="true" (mouseenter)="mouseenter()"

@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
-import {EthereumService} from "../../services/ethereum.service";
-import {Key} from "@onchain-id/identity-sdk/dist/identity/Key.interface";
+import {Component, Inject} from '@angular/core';
 import {MatIconRegistry} from '@angular/material/icon';
 import {DomSanitizer} from "@angular/platform-browser";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ClaimDTO, KeyDTO} from 'src/app/shared/identity.model';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {DkgService} from "../../services/dkg.service";
+import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
+import { ClaimDataDialogComponent } from './claim-data-dialog.component';
 
 const METAMASK_ICON =
   `
@@ -56,7 +56,7 @@ export class IdentityComponent{
 
   viewClaimForm = new FormGroup({
     address: new FormControl('', [Validators.required]),
-    topic: new FormControl(null,[Validators.required])
+    topic: new FormControl(null)
   })
 
   addClaimForm = new FormGroup({
@@ -71,7 +71,7 @@ export class IdentityComponent{
   })
 
 
-  constructor(private dkgService: DkgService, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+  constructor(private dkgService: DkgService, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, public dialog: MatDialog) {
     this.dkgService.checkIsConected();
     iconRegistry.addSvgIconLiteral('metamask', sanitizer.bypassSecurityTrustHtml(METAMASK_ICON));
   }
@@ -111,5 +111,11 @@ export class IdentityComponent{
 
   async removeKey() {
     await this.dkgService.removeKey(this.deleteKeyForm.get('address').value, this.deleteKeyForm.get('ciaddress').value, this.deleteKeyForm.get('keyType').value);
+  }
+
+  openDialog(claim: ClaimDTO) {
+    this.dialog.open(ClaimDataDialogComponent, {
+      data: claim
+    });
   }
 }

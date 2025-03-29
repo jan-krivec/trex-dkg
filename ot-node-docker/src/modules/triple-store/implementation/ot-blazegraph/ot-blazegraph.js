@@ -8,7 +8,6 @@ class OtBlazegraph extends OtTripleStore {
         this.unicodeRegex = /(?<!\\)\\U([a-fA-F0-9]{8})/g;
         await Promise.all(
             Object.keys(this.repositories).map(async (repository) => {
-                console.log(repository);
                 await this.createRepository(repository);
             }),
         );

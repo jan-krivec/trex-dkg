@@ -15,21 +15,12 @@ class AuthService {
      * @returns {boolean}
      */
     async authenticate(ip, token) {
-        console.log("Ip: ", ip);
-        console.log("Token: ", token);
         const isWhitelisted = this._isIpWhitelisted(ip);
         const isTokenValid = await this._isTokenValid(token);
-
-        console.log("Is whitelisted:", isWhitelisted)
-        console.log("Is token valid:", isTokenValid)
 
         const tokenAuthEnabled = this._authConfig.tokenBasedAuthEnabled;
         const ipAuthEnabled = this._authConfig.ipBasedAuthEnabled;
         const requiresBoth = this._authConfig.bothIpAndTokenAuthRequired;
-
-        console.log("tokenAuthEnabled:", tokenAuthEnabled);
-        console.log("ipAuthEnabled:", ipAuthEnabled);
-        console.log("requiresBoth:", requiresBoth);
 
         let isAuthenticated = false;
         if (tokenAuthEnabled && ipAuthEnabled) {
@@ -39,8 +30,6 @@ class AuthService {
         } else {
             isAuthenticated = isWhitelisted && isTokenValid;
         }
-
-        console.log("TEST AUTH1")
 
         if (!isAuthenticated) {
             this._logMessage('Received unauthenticated request.');
@@ -78,8 +67,6 @@ class AuthService {
         const abilities = await this._repository.getTokenAbilities(tokenId);
 
         const isAuthorized = abilities.includes(systemOperation);
-
-        console.log("TEST AUTH2")
 
         const logMessage = isAuthorized
             ? `Token ${tokenId} is successfully authenticated and authorized.`
@@ -151,9 +138,6 @@ class AuthService {
             return true;
         }
 
-        console.log("IpWhiteList: ", this._authConfig.ipWhitelist);
-        console.log("ReqIp: ", reqIp);
-
         for (const whitelistedIp of this._authConfig.ipWhitelist) {
             let isEqual = false;
 
@@ -161,8 +145,6 @@ class AuthService {
                 if (whitelistedIp.includes('/')) {
                     const ip = this.normalizeIp(reqIp);
                     const subnet = ipLib.cidrSubnet(whitelistedIp);
-                    console.log("Subnet: ", subnet);
-                    console.log("Contains", ip, ":" , subnet.contains(ip));
                     isEqual = subnet.contains(ip);
                 } else {
                     // For individual IP addresses

@@ -71,8 +71,6 @@ services:
       - "8900:8900"  # ot-node-docker application port
     environment:
       - NODE_ENV=development
-    volumes:
-      - ~/certs/:/root/certs/
     networks:
       - my-network
     depends_on:
@@ -82,25 +80,20 @@ services:
     working_dir: /app/ot-node-docker  # Ensure the working directory is set to /app/ot-node-docker
     entrypoint: [ "/bin/sh", "-c", "/bin/sleep 25 && chmod +x ./tools/local-network-setup/setup-linux-environment.sh && ./tools/local-network-setup/setup-linux-environment.sh --nodes=8" ]
 
-  ui:
-    build:
-      context: .
-      dockerfile: ui.Dockerfile
-    container_name: ui
-    ports:
-      - "4200:4200"
-    working_dir: /app/ui
-    depends_on:
-      - ot-node
-      - dkg-evm-module
-    command: ["npm", "start"]
-    networks:
-      - my-network
-
-volumes:
-  mysql-data:
-  blazegraph-data:
-
+#  ui:
+#    build:
+#      context: .
+#      dockerfile: ui.Dockerfile
+#    container_name: ui
+#    ports:
+#      - "4200:4200"
+#    working_dir: /app/ui
+#    depends_on:
+#      - ot-node
+#      - dkg-evm-module
+#    command: ["npm", "start"]
+#    networks:
+#      - my-network
 networks:
   my-network:
     driver: bridge

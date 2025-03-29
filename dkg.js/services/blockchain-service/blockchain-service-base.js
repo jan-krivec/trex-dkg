@@ -4,6 +4,7 @@ const Web3 = require('web3');
 const axios = require('axios');
 const AssertionStorageAbi = require('dkg-evm-module/abi/AssertionStorage.json');
 const HubAbi = require('dkg-evm-module/abi/Hub.json');
+const HubControllerAbi = require('dkg-evm-module/abi/HubController.json');
 const ServiceAgreementV1Abi = require('dkg-evm-module/abi/ServiceAgreementV1.json');
 const ServiceAgreementStorageProxyAbi = require('dkg-evm-module/abi/ServiceAgreementStorageProxy.json');
 const ContentAssetStorageAbi = require('dkg-evm-module/abi/ContentAssetStorage.json');
@@ -22,6 +23,7 @@ const ClaimIssuerAbi = require('dkg-evm-module/abi/ClaimIssuer.json');
 const ClaimTopicsRegistryAbi = require('dkg-evm-module/abi/ClaimTopicsRegistry.json');
 const TrustedIssuersRegistryAbi = require('dkg-evm-module/abi/TrustedIssuersRegistry.json');
 const ContextAbi = require('dkg-evm-module/abi/Context.json');
+const ethers = require('ethers');
 const { OPERATIONS_STEP_STATUS, DEFAULT_GAS_PRICE } = require('../../constants');
 const emptyHooks = require('../../util/empty-hooks.js');
 const { sleepForMilliseconds } = require('../utilities.js');
@@ -33,6 +35,7 @@ class BlockchainServiceBase {
         this.abis = {};
         this.abis.AssertionStorage = AssertionStorageAbi;
         this.abis.Hub = HubAbi;
+        this.abis.HubController = HubControllerAbi;
         this.abis.ServiceAgreementV1 = ServiceAgreementV1Abi;
         this.abis.ServiceAgreementStorageProxy = ServiceAgreementStorageProxyAbi;
         this.abis.ContentAssetStorage = ContentAssetStorageAbi;
@@ -1038,6 +1041,62 @@ class BlockchainServiceBase {
         }
     }
 
+    async getAgents(blockchain) {
+        return this.callContractFunction(
+            'Hub',
+            'getAgents',
+            [],
+            blockchain,
+        );
+
+        // return [];
+    }
+
+    async addAgent(agent, blockchain) {
+
+        const hubController = await this.getHubController(blockchain);
+
+        const receipt = await this.agentTransaction(hubController, 'addAgent', [agent], blockchain);
+
+        return receipt;
+    }
+
+    async removeAgent(agent, blockchain) {
+        const hubController = await this.getHubController(blockchain);
+
+        const receipt = await this.agentTransaction(hubController, 'removeAgent', [agent], blockchain);
+        return receipt;
+    }
+
+    async agentTransaction(cI, functionName, args, blockchain) {
+        await this.ensureBlockchainInfo(blockchain);
+        const contractInstance = cI;
+        let tx;
+        try {
+            tx = await this.prepareTransaction(contractInstance, functionName, args, blockchain);
+
+            let receipt = await contractInstance.methods[functionName](...args).send(tx);
+            if (blockchain.name.startsWith('otp') && blockchain.waitNeurowebTxFinalization) {
+                receipt = await this.waitForTransactionFinalization(receipt, blockchain);
+            }
+            return receipt;
+        } catch (error) {
+            try {
+                if (error && error.message) {
+                    // Match for the specific error message pattern
+                    const match = error.message.match(/reverted with reason string '(.*?)'/);
+                    if (match && match[1]) {
+                        // eslint-disable-next-line prefer-destructuring
+                        error.message = match[1]
+                    }
+                }
+            } catch (e) {
+                console.log(e);
+            }
+            throw error;
+        }
+    }
+
     async getWalletBalances(blockchain) {
         await this.ensureBlockchainInfo(blockchain);
         const web3Instance = await this.getWeb3Instance(blockchain);
@@ -1055,6 +1114,25 @@ class BlockchainServiceBase {
             blockchainToken: blockchainTokenBalance,
             trac: tracBalance,
         };
+    }
+
+    async getHubController(blockchain) {
+        const hubControllerAddress = await this.callContractFunction(
+            'Hub',
+            'owner',
+            [],
+            blockchain
+        )
+
+        const web3Instance = await this.getWeb3Instance(blockchain);
+
+        const hubController = new web3Instance.eth.Contract(
+            this.abis.HubController,
+            hubControllerAddress,
+            {from: blockchain.publicKey},
+        );
+
+        return hubController;
     }
 
     async getLatestBlock(blockchain) {

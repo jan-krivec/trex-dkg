@@ -2,12 +2,12 @@ import { pino } from 'pino';
 import pretty from 'pino-pretty';
 
 class Logger {
-    constructor(logLevel = 'trace') {
+    constructor(logLevel = 'trace', nodeName= 'unknown') {
         this.logLevel = logLevel;
-        this.initialize(logLevel);
+        this.initialize(logLevel, nodeName);
     }
 
-    initialize(logLevel) {
+    initialize(logLevel, nodeName) {
         try {
             const stream = pretty({
                 colorize: true,
@@ -15,7 +15,10 @@ class Logger {
                 translateTime: 'yyyy-mm-dd HH:MM:ss',
                 ignore: 'pid,hostname,Event_name,Operation_name,Id_operation',
                 hideObject: true,
-                messageFormat: (log, messageKey) => `${log[messageKey]}`,
+                messageFormat: (log, messageKey) => {
+                    const prefix = `[${nodeName}]`;
+                    return `${prefix} ${log[messageKey]}`;
+                },
             });
             this.pinoLogger = pino(
                 {

@@ -1,0 +1,37 @@
+<h1 mat-dialog-title>Claim Details</h1>
+<mat-dialog-content>
+  <h3>Id</h3>
+
+    <p class="text-overflow">
+      <span class="dialog-text">{{ this.data.id }}</span>
+      <button mat-icon-button [cdkCopyToClipboard]="this.data.id"><mat-icon>file_copy</mat-icon></button>
+    </p>
+  <h3>Topic</h3>
+    <p class="text-overflow">
+      <span class="dialog-text">{{ this.data.topic }}</span>
+      <button mat-icon-button [cdkCopyToClipboard]="this.data.topic.toString()"><mat-icon>file_copy</mat-icon></button>
+    </p>
+  <h3>Data</h3>
+    <p class="text-overflow">
+      <span class="dialog-text">{{ this.data.data }}</span>
+      <button mat-icon-button [cdkCopyToClipboard]="this.data.data"><mat-icon>file_copy</mat-icon></button>
+    </p>
+  <h3>ONCHAINID</h3>
+    <p class="text-overflow">
+      <span class="dialog-text">{{ this.data.onchainId }}</span>
+      <button mat-icon-button [cdkCopyToClipboard]="this.data.onchainId"><mat-icon>file_copy</mat-icon></button>
+    </p>
+  <h3>Issuer</h3>
+    <p class="text-overflow">
+      <span class="dialog-text">{{ this.data.issuer }}</span>
+      <button mat-icon-button [cdkCopyToClipboard]="this.data.issuer"><mat-icon>file_copy</mat-icon></button>
+    </p>
+  <h3>Signature</h3>
+    <p class="text-overflow">
+      <span class="dialog-text">{{ this.data.signature }}</span>
+      <button mat-icon-button [cdkCopyToClipboard]="this.data.signature"><mat-icon>file_copy</mat-icon></button>
+    </p>
+</mat-dialog-content>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Close</button>
+</div>

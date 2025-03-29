@@ -15,6 +15,39 @@ class BlockchainOperationsManager {
     }
 
     /**
+     * @async
+     * @param {Object} [options={}]  - Optional parameters for blockchain service.
+     * @returns {Promise<string[]>} - A promise that resolves to the chain id.
+     */
+    async getAgents(options = {}) {
+        const blockchain = this.inputService.getBlockchain(options);
+        return this.blockchainService.getAgents(blockchain);
+    }
+
+    /**
+     * @async
+     * @param {string} agent  - Agent address
+     * @param {Object} [options={}]  - Optional parameters for blockchain service.
+     */
+    async addAgent(agent, options = {}) {
+        const blockchain = this.inputService.getBlockchain(options);
+        const receipt = await this.blockchainService.addAgent(agent, blockchain);
+        return receipt;
+    }
+
+    /**
+     * @async
+     * @param {string} agent  - Agent address
+     * @param {Object} [options={}]  - Optional parameters for blockchain service.
+     */
+    async removeAgent(agent, options = {}) {
+        const blockchain = this.inputService.getBlockchain(options);
+        const receipt = await this.blockchainService.removeAgent(agent, blockchain);
+        return receipt;
+    }
+
+
+    /**
      * Retrieve the current gas price.
      * @async
      * @param {Object} [options={}]  - Optional parameters for blockchain service.

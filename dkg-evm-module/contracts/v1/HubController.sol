@@ -34,6 +34,16 @@ contract HubController is Named, Versioned, ContractStatus, Ownable {
         return _VERSION;
     }
 
+    function addAgent(address _agent) external onlyOwnerOrMultiSigOwner {
+        require(!hub.isAgent(_agent), "Address is already agent");
+        hub.addAgent(_agent);
+    }
+
+    function removeAgent(address _agent) external onlyOwnerOrMultiSigOwner {
+        require(hub.isAgent(_agent), "Address is not agent");
+        hub.removeAgent(_agent);
+    }
+
     function setTrexFactory(address trexFactoryAddress) external onlyOwnerOrMultiSigOwner {
         require(trexFactoryAddress != address(0), "TREX Factory Address can not be 0 address!");
         hub.setTrexFactory(trexFactoryAddress);

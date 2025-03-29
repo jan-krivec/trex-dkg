@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
 import * as WEBIFC from "web-ifc";
 import * as BUI from "@thatopen/ui";
 import * as OBC from '@thatopen/components';
@@ -10,6 +10,10 @@ import {DomSanitizer} from "@angular/platform-browser";
 import * as CUI from "./tables";
 import {TemplateResult} from "lit";
 import {TableRowData} from "@thatopen/ui/dist/components/Table/src/types";
+import {HttpClient} from "@angular/common/http";
+import {IfcViewerDetailCompontent} from "./ifc-viewer-detail.compontent";
+import {MatDialog} from "@angular/material/dialog";
+import {DkgService} from "../../services/dkg.service";
 
 interface ElementPropertiesUIState {
   components: OBC.Components;
@@ -23,7 +27,7 @@ type UpdateFunction<S extends Record<string, any>> = (state?: Partial<S>) => S;
   templateUrl: './ifc-viewer.component.html',
   styleUrls: ['./ifc-viewer.component.css']
 })
-export class IfcViewerComponent implements OnInit{
+export class IfcViewerComponent implements OnInit, AfterViewInit{
   private container: HTMLElement;
   private components: OBC.Components;
   private world: any;
@@ -37,7 +41,19 @@ export class IfcViewerComponent implements OnInit{
   public fragmentsManager: OBC.FragmentsManager;
   public ifcLoader: OBC.IfcLoader;
 
-
+  tableDefinition: BUI.TableDataTransform = {
+    Actions: (expressID) => {
+      return BUI.html`
+      <div style="position: relative; min-height: 30px;">
+        <bim-button
+          style="position: absolute; right: -340px;"
+          @click=${() => this.openDialog(expressID)}
+          label="Edit">
+        </bim-button>
+      </div>
+    `;
+    }
+  }
 
   baseStyle: Record<string, string> = {
     padding: "0.25rem",
@@ -47,7 +63,7 @@ export class IfcViewerComponent implements OnInit{
   @ViewChild('table', { static: false }) tableElement!: ElementRef;
   @ViewChild('relationsTree', { static: false }) relationsTreeElement!: ElementRef;
 
-  constructor(private el: ElementRef, private ifcViewerService: IfcViewerService, private sanitizer: DomSanitizer) {
+  constructor(private el: ElementRef, private dkgService: DkgService, private sanitizer: DomSanitizer, private http: HttpClient, public dialog: MatDialog) {
   }
 
   async ngOnInit() {
@@ -99,6 +115,10 @@ export class IfcViewerComponent implements OnInit{
     );
   }
 
+  ngAfterViewInit() {
+    this.loadIfc();
+  }
+
   onAttributesChange(e: Event) {
     const dropdown = e.target as BUI.Dropdown;
     this.updateAttributesTable({
@@ -121,7 +141,9 @@ export class IfcViewerComponent implements OnInit{
   setPropertiesTable() {
     const [propertiesTable, updatePropertiesTable] = CUI.tables.elementProperties({
       components: this.components,
+      tableDefinition: this.tableDefinition,
       fragmentIdMap: {},
+      getFunction: async (expressId) => {return this.dkgService.queryExpressId2(expressId)}
     });
 
     this.propertiesTable = propertiesTable;
@@ -141,13 +163,6 @@ export class IfcViewerComponent implements OnInit{
 
     this.relationsTree = relationsTree;
     this.relationsTree.preserveStructureOnFilter = true;
-
-    const dataTransform = {"globalId": (value: string, data: TableRowData) => {
-      // Create a button using makeModelIdButton
-      return this.makeGlobalIdButton(value, () => this.onGlobalIdButtonClick(value, data));
-    }}
-
-    this.relationsTree.dataTransform = dataTransform;
 
     this.relationsTreeElement.nativeElement.appendChild(this.relationsTree);
   }
@@ -256,22 +271,41 @@ export class IfcViewerComponent implements OnInit{
     };
   }
 
-  loadIfc = () => {
-    const fileOpener = document.createElement("input");
-    fileOpener.type = "file";
-    fileOpener.accept = ".ifc";
-    fileOpener.onchange = async () => {
-      if (fileOpener.files === null || fileOpener.files.length === 0) return;
-      const file = fileOpener.files[0];
-      fileOpener.remove();
-      const buffer = await file.arrayBuffer();
+  loadIfc = async () => {
+    try {
+      // Fetch the file from assets/data directory
+      const response = await fetch(`assets/data/small.ifc`);
+      if (!response.ok) {
+        throw new Error(`Failed to load file: ${response.statusText}`);
+      }
+
+      // Convert the response to array buffer
+      const buffer = await response.arrayBuffer();
       const data = new Uint8Array(buffer);
+
+      // Load the IFC model
       const model = await this.ifcLoader.load(data);
-      model.name = file.name.replace(".ifc", "");
+      model.name = 'small.ifc'.replace(".ifc", "");
       this.setModel(model);
-    };
-    fileOpener.click();
+
+      return model;
+    } catch (error) {
+      console.error('Error loading IFC file:', error);
+      throw error;
+    }
   };
+
+  openDialog(expressId): void {
+    console.log(expressId);
+    const dialogRef = this.dialog.open(IfcViewerDetailCompontent, {
+      data: {expressId: expressId},
+      width: '30%',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
 
   async setModel(model) {
     await this.indexer.process(model);

@@ -1,11 +1,11 @@
 <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center start" fxLayoutGap="5%">
-    <mat-card fxFlex="45%" class="factory-card">
+    <mat-card fxFlex="20%" class="factory-card">
       <mat-card-header>
         <mat-card-title>Claim Topics</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <mat-list>
-          <mat-list-item style="font-weight: bold" *ngFor="let topic of claimTopics">
+          <mat-list-item class="issuer-item" style="font-weight: bold" *ngFor="let topic of claimTopics">
             <mat-icon matListItemIcon>circle</mat-icon>
             {{topic}}
           </mat-list-item>
