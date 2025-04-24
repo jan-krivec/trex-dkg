@@ -56,13 +56,91 @@ class ContextOperationsManager {
     }
 
     /**
-     * Adds claim topic to context.
+     * Creates a new context.
+     * @async
+     * @param {string} context - Context
+     * @param {string} type - Type
+     * @param {Object[]} claimIssuers - Claim details
+     * @param {Object} contextDetails - Context details
+     * @param {Object} [options={}] - Additional options for asset creation.
+     * @returns {Object}
+     */
+    async addContextType(context,
+                        type,
+                        claimIssuers = [],
+                        options = {}) {
+        const blockchain = this.inputService.getBlockchain(options);
+
+        const claimDetails = this.mapClaimIssuersToDetails(claimIssuers);
+
+        const receipt = await this.blockchainService.executeContractFunction(
+            'TREXFactory',
+            'addContextType',
+            [context, type, claimDetails.issuers, claimDetails.claimTopics, claimDetails.issuerClaims],
+            blockchain
+        )
+
+        console.log("Transaction successful with receipt:", receipt);
+        return receipt;
+    }
+
+    /**
+     * Creates a new context.
      * @async
      * @param {string} context - Context
      * @param {Object} [options={}] - Additional options for asset creation.
+     * @returns {Object}
+     */
+    async getContextTypes(context,
+                          options = {}) {
+        const blockchain = this.inputService.getBlockchain(options);
+
+        const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
+
+        const types = await this.blockchainService.callContractFunction(
+            'Context',
+            'getTypes',
+            [],
+            blockchain,
+            contextAddress
+        );
+
+        return types;
+    }
+
+    /**
+     * Adds claim topic to context.
+     * @async
+     * @param {string} context - Context
+     * @param {string} type - type
+     * @param {Object} [options={}] - Additional options for asset creation.
      * @returns {number[]}
      */
-    async getClaimTopics(context, options = {}) {
+    async isVerified(context, type, options = {}) {
+        const blockchain = this.inputService.getBlockchain(options);
+
+        const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
+
+        const isVerified = await this.blockchainService.callContractFunction(
+            'Context',
+            'isVerified',
+            [[type], blockchain.publicKey],
+            blockchain,
+            contextAddress
+        );
+
+        return isVerified;
+    }
+
+    /**
+     * Adds claim topic to context.
+     * @async
+     * @param {string} context - Context
+     * @param {string} type - type
+     * @param {Object} [options={}] - Additional options for asset creation.
+     * @returns {number[]}
+     */
+    async getClaimTopics(context, type, options = {}) {
         const blockchain = this.inputService.getBlockchain(options);
 
         const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
@@ -75,11 +153,33 @@ class ContextOperationsManager {
             contextAddress
         );
 
-        console.log(claimTopicsRegistry);
+        const claimTopics = await this.blockchainService.callContractFunction(
+            'ClaimTopicsRegistry',
+            type == null ? 'getClaimTopics' : 'getTypeClaimTopics',
+            type == null ? [] : [type],
+            blockchain,
+            claimTopicsRegistry
+        );
+
+        return claimTopics;
+    }
+
+    async getAllTypeClaimTopics(context, options = {}) {
+        const blockchain = this.inputService.getBlockchain(options);
+
+        const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
+
+        const {claimTopicsRegistry} = await this.blockchainService.callContractFunction(
+            'Context',
+            'adresses',
+            [],
+            blockchain,
+            contextAddress
+        );
 
         const claimTopics = await this.blockchainService.callContractFunction(
             'ClaimTopicsRegistry',
-            'getClaimTopics',
+            'getAllTypeClaimTopics',
             [],
             blockchain,
             claimTopicsRegistry
@@ -92,11 +192,12 @@ class ContextOperationsManager {
      * Adds claim topic to context.
      * @async
      * @param {string} context - Context
+     * @param {string} type - Type
      * @param {number} claimTopic - Context details
      * @param {Object} [options={}] - Additional options for asset creation.
      * @returns {Object}
      */
-    async addClaimTopic(context, claimTopic, options = {}) {
+    async addClaimTopic(context, type, claimTopic, options = {}) {
         const blockchain = this.inputService.getBlockchain(options);
 
         const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
@@ -109,12 +210,10 @@ class ContextOperationsManager {
             contextAddress
         );
 
-        console.log(claimTopicsRegistry);
-
         const res = await this.blockchainService.executeContractFunction(
             'ClaimTopicsRegistry',
-            'addClaimTopic',
-            [claimTopic],
+            type == null ? 'addClaimTopic' : 'addTypeClaimTopic',
+            type == null ? [claimTopic]: [type, claimTopic],
             blockchain,
             claimTopicsRegistry
         )
@@ -127,14 +226,15 @@ class ContextOperationsManager {
      * Removes claim topic from context.
      * @async
      * @param {string} context - Context
+     * @param {string} type - Type
      * @param {number} claimTopic - Context details
      * @param {Object} [options={}] - Additional options for asset creation.
      * @returns {Object}
      */
-    async removeClaimTopic(context, claimTopic, options = {}) {
+    async removeClaimTopic(context, type, claimTopic, options = {}) {
         const blockchain = this.inputService.getBlockchain(options);
 
-        const contextAddress = this.blockchainService.getContextAddress(context, blockchain);
+        const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
         const {claimTopicsRegistry} = await this.blockchainService.callContractFunction(
             'Context',
@@ -146,8 +246,8 @@ class ContextOperationsManager {
 
         await this.blockchainService.executeContractFunction(
             'ClaimTopicsRegistry',
-            'removeClaimTopic',
-            [claimTopic],
+            type == null ? 'removeClaimTopic' : 'removeTypeClaimTopic',
+            type == null ? [claimTopic]: [type, claimTopic],
             blockchain,
             claimTopicsRegistry
         )
@@ -157,11 +257,10 @@ class ContextOperationsManager {
      * Adds claim topic to context.
      * @async
      * @param {string} context - Context
-     * @param {number} claimTopic - Context details
      * @param {Object} [options={}] - Additional options for asset creation.
      * @returns {Object}
      */
-    async getTrustedIssuers(context, claimTopic, options = {}) {
+    async getTrustedIssuers(context, options = {}) {
         const blockchain = this.inputService.getBlockchain(options);
 
         const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
@@ -248,14 +347,14 @@ class ContextOperationsManager {
      * @async
      * @param {string} context - Context
      * @param {string} claimIssuer - Claim issuer address
-     * @param {number[]} claimTopic - Context details
+     * @param {number[]} claimTopics - Context details
      * @param {Object} [options={}] - Additional options for asset creation.
      * @returns {Object}
      */
     async addTrustedIssuer(context, claimIssuer, claimTopics, options = {}) {
         const blockchain = this.inputService.getBlockchain(options);
 
-        const contextAddress = this.blockchainService.getContextAddress(context, blockchain);
+        const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
         const {trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
             'Context',
@@ -280,14 +379,14 @@ class ContextOperationsManager {
      * @async
      * @param {string} context - Context
      * @param {string} claimIssuer - Claim issuer address
-     * @param {number[]} claimTopic - Context details
+     * @param {number[]} claimTopics - Context details
      * @param {Object} [options={}] - Additional options for asset creation.
      * @returns {Object}
      */
     async updateTrustedIssuer(context, claimIssuer, claimTopics, options = {}) {
         const blockchain = this.inputService.getBlockchain(options);
 
-        const contextAddress = this.blockchainService.getContextAddress(context, blockchain);
+        const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
         const {trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
             'Context',
@@ -299,7 +398,7 @@ class ContextOperationsManager {
 
         const receipt = await this.blockchainService.executeContractFunction(
             'TrustedIssuersRegistry',
-            'updateTrustedIssuer',
+            'updateIssuerClaimTopics',
             [claimIssuer, claimTopics],
             blockchain,
             trustedIssuersRegistry
@@ -315,10 +414,10 @@ class ContextOperationsManager {
      * @param {Object} [options={}] - Additional options for asset creation.
      * @returns {Object}
      */
-    async removeTrustedIssuer(context, claimIssuer, options = {}) {
+    async removeTrustedIssuer(context,  claimIssuer, options = {}) {
         const blockchain = this.inputService.getBlockchain(options);
 
-        const contextAddress = this.blockchainService.getContextAddress(context, blockchain);
+        const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
         const {trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
             'Context',

@@ -16,7 +16,7 @@
               <form class="center-content" [formGroup]="viewKeyForm" (ngSubmit)="this.viewKeys()">
 
                 <div style="width: 90%" fxLayoutGap="5%">
-                  <mat-form-field fxFlex="100%">
+                  <mat-form-field appearance="outline"  fxFlex="100%">
                     <mat-label>Wallet Address</mat-label>
                     <input matInput type="text" formControlName="address">
                     <button type="button" mat-icon-button matSuffix (click)="this.useOwnAddress(this.viewKeyForm)"
@@ -26,7 +26,7 @@
                     </button>
                   </mat-form-field>
 
-                  <mat-form-field fxFlex="100%">
+                  <mat-form-field appearance="outline"  fxFlex="100%">
                     <mat-label>Keytype</mat-label>
                     <mat-select formControlName="keyType">
                       <mat-option *ngFor="let key of keyPurposes" [value]="key">
@@ -84,7 +84,7 @@
             <mat-card-subtitle class="subtitle">Add Key</mat-card-subtitle>
             <form class="center-content" [formGroup]="addKeyForm" (ngSubmit)="this.addKey()">
               <div style="width: 90%">
-                <mat-form-field>
+                <mat-form-field appearance="outline" >
                   <mat-label>Address</mat-label>
                   <input formControlName="address" matInput>
                   <button type="button" mat-icon-button matSuffix
@@ -96,13 +96,13 @@
                 </mat-form-field>
               </div>
               <div style="width: 90%">
-                <mat-form-field>
+                <mat-form-field appearance="outline" >
                   <mat-label>Claim Issuer Address</mat-label>
                   <input formControlName="ciaddress" matInput>
                 </mat-form-field>
               </div>
               <div style="width: 90%">
-                <mat-form-field>
+                <mat-form-field appearance="outline" >
                   <mat-label>Key Type</mat-label>
                   <mat-select formControlName="keyType">
                     <mat-option *ngFor="let key of keyPurposes" [value]="key">
@@ -120,7 +120,7 @@
               <mat-card-subtitle class="subtitle">Remove Key</mat-card-subtitle>
               <div class="center-content">
                 <div style="width: 90%">
-                  <mat-form-field>
+                  <mat-form-field appearance="outline" >
                     <mat-label>Address</mat-label>
                     <input matInput formControlName="address">
                     <button type="button" mat-icon-button matSuffix
@@ -132,13 +132,13 @@
                   </mat-form-field>
                 </div>
                 <div style="width: 90%">
-                  <mat-form-field>
+                  <mat-form-field appearance="outline" >
                     <mat-label>Claim Issuer Address</mat-label>
                     <input matInput formControlName="ciaddress">
                   </mat-form-field>
                 </div>
                 <div style="width: 90%">
-                  <mat-form-field>
+                  <mat-form-field appearance="outline" >
                     <mat-label>Select</mat-label>
                     <mat-select formControlName="keyType">
                       <mat-option *ngFor="let key of keyPurposes" [value]="key">
@@ -172,7 +172,7 @@
               <form class="center-content" [formGroup]="viewClaimForm" (ngSubmit)="this.viewClaims()">
 
                 <div style="width: 90%" fxLayoutGap="5%">
-                  <mat-form-field fxFlex="100%">
+                  <mat-form-field appearance="outline"  fxFlex="100%">
                     <mat-label>Wallet Address</mat-label>
                     <input matInput type="text" formControlName="address">
                     <button type="button" mat-icon-button matSuffix (click)="this.useOwnAddress(this.viewClaimForm)"
@@ -182,7 +182,7 @@
                     </button>
                   </mat-form-field>
 
-                  <mat-form-field fxFlex="100%">
+                  <mat-form-field appearance="outline"  fxFlex="100%">
                     <mat-label>Topic</mat-label>
                     <input matInput type="number" formControlName="topic">
                   </mat-form-field>
@@ -255,7 +255,7 @@
             <form class="center-content" [formGroup]="addClaimForm" (ngSubmit)="this.addClaim()">
 
               <div style="width: 90%" fxLayoutGap="5%">
-                <mat-form-field fxFlex="100%">
+                <mat-form-field appearance="outline"  fxFlex="100%">
                   <mat-label>Wallet Address</mat-label>
                   <input matInput type="text" formControlName="address">
                   <button type="button" mat-icon-button matSuffix
@@ -266,7 +266,7 @@
                   </button>
                 </mat-form-field>
 
-                <mat-form-field fxFlex="100%">
+                <mat-form-field appearance="outline"  fxFlex="100%">
                   <mat-label>Topic</mat-label>
                   <input matInput type="number" formControlName="topic">
                 </mat-form-field>
@@ -275,7 +275,7 @@
 
               <div style="width: 90%">
 
-                <mat-form-field>
+                <mat-form-field appearance="outline" >
                   <mat-label>Claim Data</mat-label>
                   <textarea matInput formControlName="data"></textarea>
                 </mat-form-field>
@@ -293,7 +293,7 @@
               <mat-card-subtitle class="subtitle">Remove Claim</mat-card-subtitle>
               <div class="center-content">
                 <div style="width: 90%">
-                  <mat-form-field>
+                  <mat-form-field appearance="outline" >
                     <mat-label>Address</mat-label>
                     <input matInput formControlName="address">
                     <button type="button" mat-icon-button matSuffix
@@ -305,7 +305,7 @@
                   </mat-form-field>
                 </div>
                 <div style="width: 90%">
-                  <mat-form-field>
+                  <mat-form-field appearance="outline" >
                     <mat-label>Claim Id</mat-label>
                     <input matInput formControlName="claimId">
                   </mat-form-field>

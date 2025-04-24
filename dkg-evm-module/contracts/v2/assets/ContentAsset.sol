@@ -93,7 +93,6 @@ contract ContentAssetV2 is Named, Versioned, HubDependentV2, DkgInitializable {
     }
 
     modifier onlyVerifiedContext(string[] memory _contexts) {
-        hub.checkContextVerified(_contexts, msg.sender);
         _;
     }
 

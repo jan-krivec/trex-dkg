@@ -42,6 +42,10 @@ export class IdentityRegistryComponent implements OnInit{
     return this.dkgService.selectedContext;
   }
 
+  get type() {
+    return this.dkgService.selectedType;
+  }
+
   editAgentForm= new FormGroup({
     agentAddress: new FormControl('', [Validators.required]),
     agentType: new FormControl('', [Validators.required])
@@ -57,7 +61,7 @@ export class IdentityRegistryComponent implements OnInit{
 
   isVerified() {
     if (this.context) {
-      this.dkgService.isVerified(this.context, this.isVerifiedGroup.get('isVerified').value);
+      this.dkgService.isVerified(this.context, this.type, this.isVerifiedGroup.get('isVerified').value);
     }
   }
 

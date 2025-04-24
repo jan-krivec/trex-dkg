@@ -53,13 +53,13 @@ if "%network%"=="hardhat1:31337" (
     echo ================================
     echo ====== Starting hardhat1 =======
     echo ================================
-    start cmd /k "cd /d %pathToOtNode% && node tools/local-network-setup/run-local-blockchain.js 8545 :v2"
+    start cmd /k "cd /d %pathToOtNode% && node tools/local-network-setup/run-local-blockchain.js 8545 :v1"
     echo Waiting for hardhat to start and contracts deployment
 
     echo ================================
     echo ====== Starting hardhat2 =======
     echo ================================
-    start cmd /k "cd /d %pathToOtNode% && node tools/local-network-setup/run-local-blockchain.js 9545 :v2"
+    start cmd /k "cd /d %pathToOtNode% && node tools/local-network-setup/run-local-blockchain.js 9545 :v1"
     echo Waiting for hardhat to start and contracts deployment
 )
 

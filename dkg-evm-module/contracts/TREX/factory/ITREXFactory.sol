@@ -143,6 +143,7 @@ interface ITREXFactory {
         ContextDetails calldata _contextDetails,
         ClaimDetails calldata _claimData) external;
 
+    function addContextType(string memory context, string memory typeName, address[] memory issuers, uint256[] memory claimTopics, uint256[][] memory issuerClaims) external;
 
     /**
      *  @dev getter for implementation authority address
@@ -160,7 +161,7 @@ interface ITREXFactory {
      */
     function getContext(string calldata _salt) external view returns(address);
 
-    function isContextVerified(string memory _context, address user) external view returns (bool);
+    function isContextVerified(string memory _context, string[] memory types, address user) external view returns (bool);
 
     function getContextList() external view returns (string[] memory);
 

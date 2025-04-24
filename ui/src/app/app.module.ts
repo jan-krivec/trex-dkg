@@ -15,7 +15,7 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatInputModule} from "@angular/material/input";
-import {MatFormFieldModule} from "@angular/material/form-field";
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -54,6 +54,7 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatRadioModule} from "@angular/material/radio";
 import {IfcViewerDetailCompontent} from "./components/ifc-viewer/ifc-viewer-detail.compontent";
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatTreeModule} from '@angular/material/tree';
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
 };
@@ -108,7 +109,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     MatTooltipModule,
     MatCheckboxModule,
     MatRadioModule,
-    MatStepperModule
+    MatStepperModule,
+    MatTreeModule,
   ],
   providers: [EthereumService,
               ErrorHandlerService,
@@ -120,7 +122,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
               {
                 provide: 'Window',
                 useValue: window
-              },
+              }
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

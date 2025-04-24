@@ -125,6 +125,8 @@ interface ITrustedIssuersRegistry {
      */
     function updateIssuerClaimTopics(address _trustedIssuerAdr, uint256[] calldata _claimTopics) external;
 
+    function updateIssuerClaimTopics(address sender, address _trustedIssuerAdr, uint256[] calldata _claimTopics) external;
+
     /**
      *  @dev Function for getting all the trusted claim issuers stored.
      *  @return array of all claim issuers registered.

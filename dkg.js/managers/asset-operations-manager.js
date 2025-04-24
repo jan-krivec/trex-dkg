@@ -309,9 +309,25 @@ class AssetOperationsManager {
 
         const publicContext = this.extractContext(jsonContent);
 
+        const contextDict = publicContext ? publicContext.reduce((acc, c) => {
+            acc[c] = [];
+            return acc;
+        }, {}) : [];
+
         const { public: publicAssertion, private: privateAssertion } = await formatGraph(
             jsonContent,
         );
+
+        const types = this.typeObjects(publicAssertion);
+        for (const t of types) {
+            const typeList = contextDict[t.context];
+            if (typeList == null) {
+                throw new Error("Incorect context / type extraction");
+            }
+            typeList.push(t.type);
+            contextDict[t.context] = typeList;
+        }
+
         const publicAssertionSizeInBytes =
             assertionMetadata.getAssertionSizeInBytes(publicAssertion);
 
@@ -345,11 +361,21 @@ class AssetOperationsManager {
         let tokenId;
         let mintKnowledgeAssetReceipt;
 
+        const contextTypes = [];
+
+        for (const pc of publicContext) {
+            contextTypes.push(contextDict[pc]);
+        }
+
+        console.log(publicContext);
+        console.log(contextTypes);
+
         try {
             if (paranetUAL == null) {
                 ({tokenId, receipt: mintKnowledgeAssetReceipt} = await this.blockchainService.createAsset(
                     {
                         publicContext,
+                        types: contextTypes,
                         publicAssertionId,
                         assertionSize: publicAssertionSizeInBytes,
                         triplesNumber: assertionMetadata.getAssertionTriplesNumber(publicAssertion),
@@ -370,6 +396,7 @@ class AssetOperationsManager {
                     {
                         publicAssertionId,
                         publicContext,
+                        types: contextTypes,
                         assertionSize: publicAssertionSizeInBytes,
                         triplesNumber: assertionMetadata.getAssertionTriplesNumber(publicAssertion),
                         chunksNumber: assertionMetadata.getAssertionChunksNumber(publicAssertion),
@@ -1516,6 +1543,25 @@ class AssetOperationsManager {
         }
 
         return Array.from(uris);
+    }
+
+    typeObjects(tripples) {
+        return tripples.filter(triple => triple.includes('<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>'))
+        .map(triple => {
+            const match = triple.match(/<[^>]+>\s+<http:\/\/www\.w3\.org\/1999\/02\/22-rdf-syntax-ns#type>\s+<([^>]+)>/);
+            if (match) {
+                const fullUri = match[1];
+                const lastHash = fullUri.lastIndexOf('#');
+                const lastSlash = fullUri.lastIndexOf('/');
+                const splitIndex = Math.max(lastHash, lastSlash);
+                return {
+                    context: fullUri.slice(0, splitIndex + 1),
+                    type: fullUri.slice(splitIndex + 1)
+                };
+            }
+            return null;
+        })
+        .filter(Boolean);
     }
 }
 

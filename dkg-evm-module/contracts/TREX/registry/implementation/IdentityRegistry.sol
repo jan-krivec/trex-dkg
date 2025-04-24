@@ -204,6 +204,63 @@ contract IdentityRegistry is IIdentityRegistry, HubDependentInitializable, IRSto
         }
         return true;
     }
+
+    function isVerifiedForTypes(address _userAddress, string[] memory types) external view returns (bool) {
+        if (address(identity(_userAddress)) == address(0)) {return false;}
+
+        uint256 typeId;
+        for (typeId = 0; typeId < types.length; typeId++) {
+            uint256[] memory requiredClaimTopics = _contextTopicsRegistry.getTypeClaimTopics(types[typeId]);
+            if (requiredClaimTopics.length == 0) {
+                return true;
+            }
+
+            uint256 foundClaimTopic;
+            uint256 scheme;
+            address issuer;
+            bytes memory sig;
+            bytes memory data;
+            uint256 claimTopic;
+            for (claimTopic = 0; claimTopic < requiredClaimTopics.length; claimTopic++) {
+                IClaimIssuer[] memory trustedIssuers =
+                _contextIssuersRegistry.getTrustedIssuersForClaimTopic(requiredClaimTopics[claimTopic]);
+
+                if (trustedIssuers.length == 0) {return false;}
+
+                bytes32[] memory claimIds = new bytes32[](trustedIssuers.length);
+                for (uint256 i = 0; i < trustedIssuers.length; i++) {
+                    claimIds[i] = keccak256(abi.encode(trustedIssuers[i], requiredClaimTopics[claimTopic]));
+                }
+
+                for (uint256 j = 0; j < claimIds.length; j++) {
+                    (foundClaimTopic, scheme, issuer, sig, data, ) = identity(_userAddress).getClaim(claimIds[j]);
+
+                    if (foundClaimTopic == requiredClaimTopics[claimTopic]) {
+                        try IClaimIssuer(issuer).isClaimValid(identity(_userAddress), requiredClaimTopics[claimTopic], sig,
+                            data) returns(bool _validity) {
+
+                            if (
+                                _validity
+                            ) {
+                                j = claimIds.length;
+                            }
+                            if (!_validity && j == (claimIds.length - 1)) {
+                                return false;
+                            }
+                        } catch {
+                            if (j == (claimIds.length - 1)) {
+                                return false;
+                            }
+                        }
+                    } else if (j == (claimIds.length - 1)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      *  @dev See {IIdentityRegistry-issuersRegistry}.
      */

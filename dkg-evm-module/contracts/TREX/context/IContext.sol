@@ -125,7 +125,9 @@ interface IContext {
      */
     function compliance() external view returns (IModularCompliance);
 
-    function isVerified(address user) external view returns (bool);
+    function isVerified(string[] memory types, address user) external view returns (bool);
 
-    function isVerifiedTransfer(address from, address to) external returns (bool);
+    function isVerifiedTransfer(string[] memory types, address from, address to) external returns (bool);
+
+    function getTypes() external view returns (string[] memory);
 }

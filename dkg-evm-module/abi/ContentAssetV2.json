@@ -387,6 +387,11 @@
             "type": "string[]"
           },
           {
+            "internalType": "string[][]",
+            "name": "types",
+            "type": "string[][]"
+          },
+          {
             "internalType": "bytes32",
             "name": "assertionId",
             "type": "bytes32"
@@ -456,6 +461,11 @@
             "internalType": "string[]",
             "name": "contexts",
             "type": "string[]"
+          },
+          {
+            "internalType": "string[][]",
+            "name": "types",
+            "type": "string[][]"
           },
           {
             "internalType": "bytes32",

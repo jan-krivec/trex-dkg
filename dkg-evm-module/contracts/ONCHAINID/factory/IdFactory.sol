@@ -192,6 +192,11 @@ contract IdFactory is IIdFactory, HubDependent {
         return pairs;
     }
 
+    function getClaimIssuer(address issuer) external override view returns (address) {
+        require(_claimIssuerMap[issuer] != address(0), "Issuer is not registered");
+        return _claimIssuerMap[issuer];
+    }
+
     function registerClaimIssuer(address add, address claimIssuerAdr) external onlyAgent override{
         require(add != address(0), "invalid argument - zero address");
         require(claimIssuerAdr != address(0), "invalid argument - claimIssuer zero address");

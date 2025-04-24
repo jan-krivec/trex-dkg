@@ -22,11 +22,6 @@ RUN if [ -e /app/ot-node-docker/node_modules/dkg-evm-module ] || [ -L /app/ot-no
     fi && \
     ln -s /app/dkg-evm-module /app/ot-node-docker/node_modules/dkg-evm-module
 
-RUN if [ -e /app/ui/node_modules/dkg.js ] || [ -L /app/ui/node_modules/dkg.js ]; then \
-    rm -rf /app/ui/node_modules/dkg.js; \
-    fi && \
-    ln -s /app/dkg.js /app/ui/node_modules/dkg.js
-
 # Create .env file with environment variables
 RUN echo "NODE_ENV=development" > /app/ot-node-docker/.env && \
     echo "RPC_ENDPOINT_BC1=http://hardhat-network:8545" >> /app/ot-node-docker/.env && \

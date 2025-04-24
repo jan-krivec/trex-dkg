@@ -5,6 +5,7 @@ pragma solidity 0.8.17;
 library ContentAssetStructs {
     struct AssetInputArgs {
         string[] contexts;
+        string[][] types;
         bytes32 assertionId;
         uint128 size;
         uint32 triplesNumber;

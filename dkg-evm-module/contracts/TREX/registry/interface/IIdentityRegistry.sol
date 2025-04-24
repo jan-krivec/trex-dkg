@@ -224,4 +224,6 @@ interface IIdentityRegistry {
      *  @dev Returns the ClaimTopicsRegistry linked to the current IdentityRegistry.
      */
     function topicsRegistry() external view returns (IClaimTopicsRegistry);
+
+    function isVerifiedForTypes(address _userAddress, string[] memory types) external view returns (bool);
 }

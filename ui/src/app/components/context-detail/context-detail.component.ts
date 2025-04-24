@@ -1,14 +1,16 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {DkgService} from "../../services/dkg.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: '',
   templateUrl: './context-detail.component.html'
 })
-export class ContextDetailComponent{
+export class ContextDetailComponent implements OnInit{
 
-
+  isContext: boolean = true;
+  label: string;
 
   contextDetailForm = new FormGroup({
     context: new FormControl('', [Validators.required]),
@@ -19,6 +21,18 @@ export class ContextDetailComponent{
     }),
     claimIssuers: new FormArray([])
   });
+
+  ngOnInit() {
+    const urlSegments = this.router.url.split('/');
+    const lastSegment = urlSegments[urlSegments.length - 1];
+    if (lastSegment === 'addContext') {
+      this.isContext = true;
+      this.label = 'Context'
+    } else {
+      this.isContext = false;
+      this.label = 'Type'
+    }
+  }
 
   get claimIssuers() {
     return this.contextDetailForm.get('claimIssuers') as FormArray
@@ -55,7 +69,7 @@ export class ContextDetailComponent{
     }
   }
 
-  constructor(private dkgService: DkgService) { };
+  constructor(private dkgService: DkgService, private router: Router) { };
 
   addClaimTopic() {
     if (this.newClaimTopics && this.addClaimTopicForm.get('claimTopic').value != null) {
@@ -73,7 +87,12 @@ export class ContextDetailComponent{
   async onSubmit() {
     const val = this.contextDetailForm.get('claimIssuers').value;
     const claimIssuers = Array.isArray(val) ? val : [val]
-    await this.dkgService.deployContext(this.contextDetailForm.get('context').value, claimIssuers)
+    if (this.isContext) {
+      await this.dkgService.deployContext(this.contextDetailForm.get('context').value, claimIssuers);
+    }
+    else {
+      await this.dkgService.addContextType(this.dkgService.selectedContext, this.contextDetailForm.get('context').value, claimIssuers);
+    }
   }
 
   removeTrustedIssuer(index: number) {

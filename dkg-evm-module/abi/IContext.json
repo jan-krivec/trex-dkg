@@ -81,6 +81,19 @@
   },
   {
     "inputs": [],
+    "name": "getTypes",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "identityRegistry",
     "outputs": [
       {
@@ -94,6 +107,11 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "string[]",
+        "name": "types",
+        "type": "string[]"
+      },
       {
         "internalType": "address",
         "name": "user",
@@ -113,6 +131,11 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "string[]",
+        "name": "types",
+        "type": "string[]"
+      },
       {
         "internalType": "address",
         "name": "from",

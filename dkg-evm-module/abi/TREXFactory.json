@@ -108,6 +108,39 @@
     "inputs": [
       {
         "internalType": "string",
+        "name": "context",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "typeName",
+        "type": "string"
+      },
+      {
+        "internalType": "address[]",
+        "name": "issuers",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "claimTopics",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[][]",
+        "name": "issuerClaims",
+        "type": "uint256[][]"
+      }
+    ],
+    "name": "addContextType",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
         "name": "",
         "type": "string"
       }
@@ -297,6 +330,11 @@
         "internalType": "string",
         "name": "_context",
         "type": "string"
+      },
+      {
+        "internalType": "string[]",
+        "name": "types",
+        "type": "string[]"
       },
       {
         "internalType": "address",

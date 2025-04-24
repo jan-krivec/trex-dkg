@@ -41,6 +41,30 @@ services:
       retries: 10
       start_period: 15s
 
+#  blockscanner1:
+#    image: alethio/ethereum-lite-explorer
+#    container_name: blockscanner1
+#    ports:
+#      - "8080:80"  # Accessible at http://localhost:8080
+#    environment:
+#      - APP_NODE_URL=http://localhost:8545
+#    networks:
+#      - my-network
+#    depends_on:
+#      - dkg-evm-module
+#
+#  blockscanner2:
+#    image: alethio/ethereum-lite-explorer
+#    container_name: blockscanner2
+#    ports:
+#      - "8081:80"  # Accessible at http://localhost:8081
+#    environment:
+#      - APP_NODE_URL=http://localhost:9545
+#    networks:
+#      - my-network
+#    depends_on:
+#      - dkg-evm-module
+
   dkg-evm-module:
     build:
       context: .
@@ -49,6 +73,11 @@ services:
     ports:
       - "8545:8545"  # ot-node-docker application port
       - "9545:9545"  # ot-node-docker application port
+    volumes:
+      - ./dkg-evm-module:/app
+      - dkg_node_modules:/app/node_modules
+      - dkg_hardhat_cache:/app/cache
+      - dkg_hardhat_data:/app/.hardhat
     expose:
       - 8545
       - 9545
@@ -97,3 +126,8 @@ services:
 networks:
   my-network:
     driver: bridge
+
+volumes:
+  dkg_node_modules:
+  dkg_hardhat_cache:
+  dkg_hardhat_data:

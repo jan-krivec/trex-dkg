@@ -1,9 +1,14 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {DkgService} from "../../../services/dkg.service";
 import {ContextComponent} from "../context.component";
-import {last, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {TrustedIssuerDTO} from "./trusted-issuer.model";
+
+interface TypeIssuers {
+  typeName: string;
+  claimIssuers: TrustedIssuerDTO[];
+}
 
 @Component({
   selector: 'app-trusted-issuers-registry',
@@ -29,6 +34,10 @@ export class TrustedIssuersRegistryComponent implements OnInit{
     return this.dkgService.selectedContext;
   }
 
+  get type() {
+    return this.dkgService.selectedType;
+  }
+
   get tiClaimTopics(): number[] {
     return this.addTrustedIssuerGroup.get('claimTopics').value
   }
@@ -45,6 +54,10 @@ export class TrustedIssuersRegistryComponent implements OnInit{
       this.getTrustedIssuers();
     });
 
+    this.subscription = this.dkgService.typeSubject.subscribe((type: string) => {
+      this.getTrustedIssuers();
+    });
+
     this.getTrustedIssuers();
   }
 
@@ -54,7 +67,7 @@ export class TrustedIssuersRegistryComponent implements OnInit{
 
   addClaimTopic() {
     if (this.addTrustedIssuerGroup.get('addClaimTopic').value) {
-      this.tiClaimTopics = [... this.tiClaimTopics, this.addTrustedIssuerGroup.get('addClaimTopic').value];
+      this.tiClaimTopics = [... this.tiClaimTopics ?? [], this.addTrustedIssuerGroup.get('addClaimTopic').value];
       this.addTrustedIssuerGroup.get('addClaimTopic').setValue(null);
     }
   }
@@ -76,16 +89,19 @@ export class TrustedIssuersRegistryComponent implements OnInit{
   async addTrustedIssuer() {
     await this.dkgService.addTrustedIssuer(this.context, this.addTrustedIssuerGroup.get('address').value, this.addTrustedIssuerGroup.get('claimTopics').value);
     this.addTrustedIssuerGroup.reset();
+    this.getTrustedIssuers();
   }
 
   async updateTrustedIssuer() {
     await this.dkgService.updateTrustedIssuer(this.context, this.addTrustedIssuerGroup.get('address').value, this.addTrustedIssuerGroup.get('claimTopics').value);
     this.addTrustedIssuerGroup.reset();
+    this.getTrustedIssuers();
   }
 
   async removeTrustedIssuer() {
     await this.dkgService.removeTrustedIssuer(this.context, this.removeTrustedIssuerForm.get('address').value);
     this.removeTrustedIssuerForm.reset();
+    this.getTrustedIssuers();
   }
 
   deleteClaimTopic(claimTopic: number) {

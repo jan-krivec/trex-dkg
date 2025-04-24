@@ -45,6 +45,12 @@
       </mat-list-item>
       <div class="submenu" [ngClass]="{'expanded' : showSubmenu}" *ngIf="isShowing || isExpanded">
         <!--        <a mat-list-item href="...">Identity Registryasdasdasd</a>-->
+        <a [routerLink]="'context/addType'" mat-list-item>
+          <div class="menu-link">
+            <mat-icon class="menu-icon" mat-list-icon>library_add</mat-icon>
+            Add type
+          </div>
+        </a>
         <a [routerLink]="'context/identityRegistry'" mat-list-item>
           <div class="menu-link">
             <mat-icon class="menu-icon" mat-list-icon>account_circle</mat-icon>

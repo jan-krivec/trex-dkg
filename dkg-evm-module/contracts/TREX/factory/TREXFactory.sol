@@ -194,6 +194,28 @@ contract TREXFactory is ITREXFactory, HubDependent {
         emit TREXSuiteDeployed(address(context), address(mc), _context);
     }
 
+    function addContextType(string memory context, string memory typeName, address[] memory issuers, uint256[] memory claimTopics, uint256[][] memory issuerClaims) external override onlyAgent {
+        address contextAdr = contextDeployed[context];
+        IContext context = IContext(contextAdr);
+        (address modularCompliance, address identityRegistry, address trustedIssuersRegistry, address claimTopicsRegistry) = context.adresses();
+        ITrustedIssuersRegistry tir = ITrustedIssuersRegistry(trustedIssuersRegistry);
+        IClaimTopicsRegistry ctr = IClaimTopicsRegistry(claimTopicsRegistry);
+
+        for (uint256 i = 0; i < claimTopics.length; i++) {
+            ctr.addTypeClaimTopic(msg.sender, typeName, claimTopics[i]);
+        }
+
+        for (uint256 i = 0; i < issuers.length; i++) {
+            if (tir.isTrustedIssuer(issuers[i])) {
+                uint256[] memory trustedIssuerClaimTopics = tir.getTrustedIssuerClaimTopics(issuers[i]);
+                tir.updateIssuerClaimTopics(msg.sender,issuers[i], merge(trustedIssuerClaimTopics, issuerClaims[i]));
+            } else {
+                tir.addTrustedIssuer(msg.sender, issuers[i], issuerClaims[i]);
+            }
+
+        }
+    }
+
     /**
      *  @dev See {ITREXFactory-getIdFactory}.
      */
@@ -377,12 +399,26 @@ contract TREXFactory is ITREXFactory, HubDependent {
         factoryIdentityRegistryStorage.removeIdentityFromStorage(_userAddress);
     }
 
-    function isContextVerified(string memory _context, address user) external view override returns (bool){
+    function isContextVerified(string memory _context, string[] memory types, address user) external view override returns (bool) {
         address contextAddress = contextDeployed[_context];
         if (contextAddress != address(0)) {
             IContext context = IContext(contextAddress);
-            return context.isVerified((user));
+            return context.isVerified(types, user);
         }
         return true;
+    }
+
+    function merge(uint[] memory a, uint[] memory b) private pure returns (uint256[] memory) {
+        uint[] memory result = new uint[](a.length + b.length);
+
+        for (uint i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+
+        for (uint j = 0; j < b.length; j++) {
+            result[a.length + j] = b[j];
+        }
+
+        return result;
     }
 }

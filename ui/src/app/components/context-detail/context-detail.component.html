@@ -1,106 +1,95 @@
-<div fxLayout="column" fxLayoutAlign="center center" style="height: calc(100vh - 64px);">
+<div fxLayout="column" fxLayoutAlign="{{this.isContext ? 'center' : 'start'}} center" style="height: calc(100vh - 64px);">
   <mat-card class="factory-card">
     <mat-card-header>
-      <mat-card-title>Add Context</mat-card-title>
+      <mat-card-title>Add {{this.label}}</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
-      <div class="car-tab">
+    <div>
+      <mat-card-content style="overflow: hidden; display: flex; flex-direction: column; width: 90%; align-self: center; margin: 0 auto; max-height: 700px">
+        <div class="car-tab" style="flex: 1; overflow-y: auto; padding: 0 16px;">
+          <form [formGroup]="contextDetailForm" (ngSubmit)="this.onSubmit()" style="height: 100%;">
+            <div style="display: flex; flex-direction: column; height: 100%;">
+              <div style="margin-top: 16px;">
+                <mat-form-field appearance="outline"  style="width: 100%;">
+                  <mat-label>{{this.label}}</mat-label>
+                  <input matInput type="text" formControlName="context">
+                </mat-form-field>
+              </div>
 
-        <form class="center-content" [formGroup]="contextDetailForm" (ngSubmit)="this.onSubmit()">
+              <div formGroupName="addClaimTopicForm" style="margin-top: 16px;">
+                <mat-form-field appearance="outline"  style="width: 100%;">
+                  <mat-label>Trusted Issuer ONCHAINID</mat-label>
+                  <input matInput formControlName="issuer" type="text">
+                </mat-form-field>
 
-          <div style="width: 90%">
-            <div>
-              <mat-form-field fxFlex="100%">
-                <mat-label>Context</mat-label>
-                <input matInput type="text" formControlName="context">
-              </mat-form-field>
+                <mat-form-field appearance="outline"  style="width: 100%; margin-top: 16px;">
+                  <mat-label>Claim Topic</mat-label>
+                  <input matInput formControlName="claimTopic" type="number">
+                </mat-form-field>
+
+                <div *ngIf="this.newClaimTopics?.length > 0" style="margin: 16px 0;">
+                  <mat-card>
+                    <mat-card-header>
+                      <mat-card-title>Claim Topics</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                      <mat-list>
+                        <mat-list-item *ngFor="let claimTopic of this.newClaimTopics" class="claim-topic-item">
+                          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <div class="claim-topic-text">{{claimTopic}}</div>
+                            <button type="button" (click)="this.deleteClaimTopic(claimTopic)" mat-icon-button
+                                    color="warn">
+                              x
+                            </button>
+                          </div>
+                        </mat-list-item>
+                      </mat-list>
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+
+                <div fxLayout="row" fxLayoutGap="16px" style="margin: 16px 0;">
+                  <button type="button" (click)="this.addClaimTopic()" mat-raised-button fxFlex="50%">
+                    Add Claim Topic
+                  </button>
+                  <button type="button" (click)="this.addIssuer()" mat-raised-button fxFlex="50%">
+                    Add Trusted Issuer
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="this.claimIssuers.controls?.length > 0" style="margin-bottom: 16px;">
+                <mat-card>
+                  <mat-card-header>
+                    <mat-card-title>Trusted Issuers</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <mat-list formArrayName="claimIssuers">
+                      <mat-list-item *ngFor="let issuer of claimIssuers.controls; let i = index" [formGroupName]="i"
+                                     class="claim-topic-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                          <div>
+                            <div>Trusted Issuer: {{issuer.get('issuer').value}}</div>
+                            <div>Claim Topics: {{issuer.get('claimTopics').value}}</div>
+                          </div>
+                          <button type="button" mat-icon-button (click)="this.removeTrustedIssuer(i)" color="warn">
+                            x
+                          </button>
+                        </div>
+                      </mat-list-item>
+                    </mat-list>
+                  </mat-card-content>
+                </mat-card>
+              </div>
             </div>
-          </div>
+          </form>
+        </div>
 
-          <div class="center-content" style="width: 100%" formGroupName="addClaimTopicForm">
-            <div style="width: 90%">
-              <mat-form-field fxFlex="100%">
-                <mat-label>Trusted Issuer ONCHAINID</mat-label>
-                <input matInput formControlName="issuer" type="text">
-              </mat-form-field>
-            </div>
-
-            <div style="width: 90%">
-              <mat-form-field fxFlex="100%">
-                <mat-label>Claim Topic</mat-label>
-                <input matInput formControlName="claimTopic" type="number">
-              </mat-form-field>
-            </div>
-
-            <div style="width: 90%; margin: 15px 0" *ngIf="this.newClaimTopics?.length > 0">
-              <mat-card>
-                <mat-card-header>
-                  <mat-card-title>Claim Topics</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                  <mat-list #shoes>
-                    <mat-list-item class="claim-topic-item" *ngFor="let claimTopic of this.newClaimTopics">
-                      <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div class="claim-topic-text">{{claimTopic}}</div>
-                        <button type="button" (click)="this.deleteClaimTopic(claimTopic)" mat-icon-button color="warn">
-                          x
-                        </button>
-                      </div>
-
-                    </mat-list-item>
-                  </mat-list>
-                </mat-card-content>
-              </mat-card>
-            </div>
-
-            <div style="width: 90%" fxLayout="row" fxLayoutAlign="space-between center">
-              <button type="button" (click)="this.addClaimTopic()" mat-raised-button fxFlex="45%">Add Claim Topic
-              </button>
-              <button style="margin-right: 0" type="button" (click)="this.addIssuer()" mat-raised-button fxFlex="45%">
-                Add Trusted Issuer
-              </button>
-            </div>
-          </div>
-
-          <div style="width: 90%; margin: 15px 0" *ngIf="this.claimIssuers.controls?.length > 0">
-            <mat-card>
-              <mat-card-header>
-                <mat-card-title>Trusted Issuers</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <mat-list>
-                  <mat-list-item formArrayName="claimIssuers" class="claim-topic-item"
-                                 *ngFor="let issuer of claimIssuers.controls; let i = index"
-                                 style="display: flex; justify-content: space-between; align-items: center;">
-                    <div [formGroupName]="i">
-                            <span style="display: flex; align-items: center;"
-                                  matListItemTitle>
-                              <div>Trusted Issuer: {{issuer.get('issuer').value}}</div>
-                              <button type="button" mat-icon-button
-                                      (click)="this.removeTrustedIssuer(i)"
-                                      color="warn" style="margin-left: auto">
-                                x
-                              </button>
-                            </span>
-                      <span matListItemLine>Claim Topics: {{issuer.get('claimTopics').value}}</span>
-                    </div>
-
-                    <div>
-
-                    </div>
-
-                  </mat-list-item>
-                </mat-list>
-              </mat-card-content>
-            </mat-card>
-          </div>
-
-          <div style="margin-top: 20px"></div>
-          <button type="submit" mat-raised-button>Add Context
+        <div style="display: flex; justify-content: flex-end">
+          <button style="margin-right: 15px" type="submit" (click)="this.onSubmit()" mat-raised-button>
+            Add {{this.label}}
           </button>
-        </form>
-
-      </div>
-    </mat-card-content>
+        </div>
+      </mat-card-content>
+    </div>
   </mat-card>
 </div>

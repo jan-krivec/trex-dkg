@@ -145,24 +145,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "string[]",
-        "name": "_contexts",
-        "type": "string[]"
-      },
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "checkContextVerified",
-    "outputs": [],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "getAgents",
     "outputs": [

@@ -19,6 +19,10 @@ const routes: Routes = [
     component: ContextComponent,
     children: [
       {
+        path: 'addType',
+        component: ContextDetailComponent
+      },
+      {
       path: 'identityRegistry',
       component: IdentityRegistryComponent
       },

@@ -23,7 +23,7 @@
       <div style="margin-top: 20px; margin-bottom: 20px">
         <h3>Add {{selectedOption}} data</h3>
       </div>
-      <mat-form-field *ngFor="let controlName of getFormControls()" appearance="fill">
+      <mat-form-field appearance="outline"  *ngFor="let controlName of getFormControls()">
         <mat-label>{{ controlName }}</mat-label>
 
         <!-- Check if the control has type 'select' -->

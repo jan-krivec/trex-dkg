@@ -63,6 +63,12 @@
 pragma solidity 0.8.17;
 
 interface IClaimTopicsRegistry {
+
+    struct TypeClaimTopics {
+        string typeName;
+        uint[] claimTopics;
+    }
+
     /**
      *  this event is emitted when a claim topic has been added to the ClaimTopicsRegistry
      *  the event is emitted by the 'addClaimTopic' function
@@ -88,6 +94,19 @@ interface IClaimTopicsRegistry {
 
     function addClaimTopic(address sender, uint256 _claimTopic) external;
 
+    function addTypeClaimTopic(string memory typeName, uint256 claimTopic) external;
+
+    function addTypeClaimTopic(address sender, string memory typeName, uint256 claimTopic) external;
+
+    function setTypeClaimTopics(address sender, string calldata typeName, uint256[] memory claimTopics) external;
+
+    function setTypeClaimTopics(string memory typeName, uint256[] memory claimTopics) external;
+
+    function getTypeClaimTopics(string memory typeName) external view returns (uint256[] memory);
+
+    function getAllTypeClaimTopics() external view returns (TypeClaimTopics[] memory);
+
+    function getContextTypes() external view returns (string[] memory);
     /**
      *  @dev Remove a trusted claim topic (For example: KYC=1, AML=2).
      *  Only owner can call.
@@ -97,6 +116,10 @@ interface IClaimTopicsRegistry {
     function removeClaimTopic(uint256 _claimTopic) external;
 
     function removeClaimTopic(address sender,uint256 _claimTopic) external;
+
+    function removeTypeClaimTopic(string memory typeName, uint256 _claimTopic) external;
+
+    function removeTypeClaimTopic(address sender, string memory typeName, uint256 _claimTopic) external;
 
     /**
      *  @dev Get the trusted claim topics for the security token

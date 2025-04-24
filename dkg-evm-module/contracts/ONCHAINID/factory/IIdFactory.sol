@@ -99,6 +99,8 @@ interface IIdFactory {
 
     function getClaimIssuers() external view returns(Pair[] memory);
 
+    function getClaimIssuer(address issuer) external view returns (address);
+
     /**
      *  @dev function used to link a wallet to a claim issuer
      *  @param add the address of the wallet

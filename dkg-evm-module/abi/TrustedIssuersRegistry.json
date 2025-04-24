@@ -338,5 +338,28 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_trustedIssuerAdr",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_claimTopics",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "updateIssuerClaimTopics",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ]

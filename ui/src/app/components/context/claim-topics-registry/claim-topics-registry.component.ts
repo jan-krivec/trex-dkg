@@ -2,6 +2,24 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {DkgService} from "../../../services/dkg.service";
 import {Subscription} from "rxjs";
+import {FlatTreeControl} from "@angular/cdk/tree";
+import {MatTreeFlatDataSource, MatTreeFlattener} from "@angular/material/tree";
+
+interface TypeClaimTopics {
+  typeName: string;
+  claimTopics: number[];
+}
+
+interface TypeClaimTopicsNode {
+  name: string;
+  children?: TypeClaimTopicsNode[];
+}
+
+interface ExampleFlatNode {
+  expandable: boolean;
+  name: string;
+  level: number;
+}
 
 @Component({
   selector: 'app-claim-topics-registry',
@@ -10,11 +28,17 @@ import {Subscription} from "rxjs";
 export class ClaimTopicsRegistryComponent implements OnInit, OnDestroy{
   subscription: Subscription;
   claimTopics: number[] = [];
+  claimTopicsTypes: TypeClaimTopics[] = [];
+
 
   constructor(private dkgService: DkgService) { };
 
   get context() {
     return this.dkgService.selectedContext;
+  }
+
+  get type() {
+    return this.dkgService.selectedType;
   }
 
   addTopicForm= new FormGroup({
@@ -41,19 +65,20 @@ export class ClaimTopicsRegistryComponent implements OnInit, OnDestroy{
   async getClaimTopics() {
     if (this.context) {
       this.claimTopics = await this.dkgService.getClaimTopics(this.context);
+      this.claimTopicsTypes = await this.dkgService.getTypesClaimTopics(this.context);
     }
   }
 
   async addClaimTopic() {
     if (this.context) {
-      await this.dkgService.addClaimTopic(this.context, this.addTopicForm.get('topic').value);
+      await this.dkgService.addClaimTopic(this.context, this.type, this.addTopicForm.get('topic').value);
       this.getClaimTopics();
     }
   }
 
   async removeClaimTopic() {
     if (this.context) {
-      await this.dkgService.removeClaimTopic(this.context, this.removeTopicForm.get('topic').value);
+      await this.dkgService.removeClaimTopic(this.context, this.type, this.removeTopicForm.get('topic').value);
       this.getClaimTopics();
     }
   }

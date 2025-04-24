@@ -68,6 +68,10 @@ import "../../../v1/abstract/HubDependentInitializable.sol";
 
 
 contract ClaimTopicsRegistry is IClaimTopicsRegistry, HubDependentInitializable, CTRStorage {
+    // Type-specific claim topics
+    mapping(string => uint256[]) private _typeClaimTopics;
+    string[] _types;
+    mapping(string => mapping(uint256 => bool)) private _typeClaimTopicExists;
 
     function init(address hubAddress) external initializer {
         __setHub(hubAddress);
@@ -93,6 +97,125 @@ contract ClaimTopicsRegistry is IClaimTopicsRegistry, HubDependentInitializable,
         }
         _claimTopics.push(_claimTopic);
         emit ClaimTopicAdded(_claimTopic);
+    }
+
+    function addTypeClaimTopic(address sender, string memory typeName, uint256 claimTopic) external override {
+        addTypeClaimTopicInternal(sender, typeName, claimTopic);
+    }
+
+    function addTypeClaimTopic(string memory typeName, uint256 claimTopic) external override {
+        addTypeClaimTopicInternal(msg.sender, typeName, claimTopic);
+    }
+
+
+    function addTypeClaimTopicInternal(address sender, string memory typeName, uint256 claimTopic) internal {
+        checkOnlyAgent(sender);
+        require(!_typeClaimTopicExists[typeName][claimTopic], "claimTopic already exists for this type");
+        require(_typeClaimTopics[typeName].length < 15, "cannot require more than 15 topics per type");
+
+        if (_typeClaimTopics[typeName].length == 0) {
+            _types.push(typeName);
+        }
+
+        _typeClaimTopics[typeName].push(claimTopic);
+        _typeClaimTopicExists[typeName][claimTopic] = true;
+    }
+
+    function setTypeClaimTopics(address sender, string calldata typeName, uint256[] calldata claimTopics) external override {
+        setTypeClaimTopicInternal(sender, typeName, claimTopics);
+    }
+
+    function setTypeClaimTopics(string memory typeName, uint256[] memory claimTopics) external override {
+        setTypeClaimTopicInternal(msg.sender, typeName, claimTopics);
+    }
+
+    function setTypeClaimTopicInternal(address sender, string memory typeName, uint256[] memory claimTopics) internal {
+        checkOnlyAgent(sender);
+        require(_typeClaimTopics[typeName].length == 0, "claimTopics already exists for this type");
+        require(_typeClaimTopics[typeName].length < 15, "cannot require more than 15 topics per type");
+
+        _typeClaimTopics[typeName] = claimTopics;
+        _types.push(typeName);
+
+        for (uint256 i = 0; i < claimTopics.length; i++) {
+            _typeClaimTopicExists[typeName][claimTopics[i]] = true;
+        }
+    }
+
+    function removeTypeClaimTopic(string memory typeName, uint256 claimTopic) external override {
+        removeTypeClaimTopicInternal(msg.sender, typeName, claimTopic);
+    }
+
+    function removeTypeClaimTopic(address sender, string memory typeName, uint256 claimTopic) external override {
+        removeTypeClaimTopicInternal(sender, typeName, claimTopic);
+    }
+
+    /**
+     * @dev Remove a claim topic for a specific type
+     * @param typeName The name of the type
+     * @param claimTopic The claim topic to remove
+     */
+    function removeTypeClaimTopicInternal(address sender, string memory typeName, uint256 claimTopic) internal {
+        checkOnlyAgent(sender);
+        require(_typeClaimTopicExists[typeName][claimTopic], "claimTopic does not exist for this type");
+
+        uint256[] storage topics = _typeClaimTopics[typeName];
+        for (uint256 i = 0; i < topics.length; i++) {
+            if (topics[i] == claimTopic) {
+                topics[i] = topics[topics.length - 1];
+                topics.pop();
+                _typeClaimTopicExists[typeName][claimTopic] = false;
+                break;
+            }
+        }
+        if (topics.length == 0) {
+            string[] storage types = _types;
+            for (uint256 i = 0; i < types.length; i++) {
+                if (keccak256(bytes(types[i])) == keccak256(bytes(typeName))) {
+                    types[i] = types[types.length - 1];
+                    types.pop();
+                    break;
+                }
+            }
+        }
+    }
+
+    function getContextTypes() external override view returns (string[] memory) {
+        return _types;
+    }
+
+    /**
+     * @dev Get claim topics for a specific type
+     * @param typeName The name of the type
+     * @return Array of claim topics
+     */
+    function getTypeClaimTopics(string memory typeName) external override view returns (uint256[] memory) {
+        return _typeClaimTopics[typeName];
+    }
+
+    function getAllTypeClaimTopics() external override view returns (TypeClaimTopics[] memory) {
+        uint256 typesLength = _types.length;
+        TypeClaimTopics[] memory result = new TypeClaimTopics[](typesLength);
+
+        for (uint i = 0; i < typesLength; i++) {
+            string memory typeName = _types[i];
+            result[i] = TypeClaimTopics({
+            typeName: typeName,
+            claimTopics: _typeClaimTopics[typeName]
+            });
+        }
+
+        return result;
+    }
+
+    /**
+     * @dev Check if a claim topic exists for a specific type
+     * @param typeName The name of the type
+     * @param claimTopic The claim topic to check
+     * @return True if the claim topic exists for the type
+     */
+    function hasTypeClaimTopic(string memory typeName, uint256 claimTopic) external view returns (bool) {
+        return _typeClaimTopicExists[typeName][claimTopic];
     }
 
     /**

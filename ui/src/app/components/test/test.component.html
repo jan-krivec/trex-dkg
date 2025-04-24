@@ -31,7 +31,7 @@
                   <mat-divider style="margin: 5% 0"></mat-divider>
 
 
-                  <mat-form-field style="margin: 0" appearance="fill">
+                  <mat-form-field appearance="outline"  style="margin: 0" appearance="fill">
                     <mat-label>UAL</mat-label>
                     <input matInput [(ngModel)]="this.updateUal" required>
                   </mat-form-field>
@@ -57,13 +57,13 @@
             <form [formGroup]="this.searchFormGroup">
               <div fxLayout="column" fxLayoutAlign="start center" fxFlex="auto">
                 <div style="height: 60%; width: 100%" fxFlex="row">
-                  <mat-form-field appearance="fill">
+                  <mat-form-field appearance="outline" >
                     <mat-label>UAL</mat-label>
                     <input matInput formControlName="ual" required>
                   </mat-form-field>
                   <div
                     style="display: flex; align-items: flex-start; justify-content: center; gap: 10px; padding: 5px 0;">
-                    <mat-form-field>
+                    <mat-form-field appearance="outline" >
                       <mat-label>State</mat-label>
                       <mat-select (selectionChange)="this.onSelectionChange($event)" [(value)]="this.selHistoryOption">
                         <mat-option [value]="option.value"
@@ -71,7 +71,7 @@
                       </mat-select>
                     </mat-form-field>
 
-                    <mat-form-field appearance="fill">
+                    <mat-form-field appearance="outline" >
                       <mat-label>State</mat-label>
                       <input matInput formControlName="historyOption">
                       <mat-hint align="end">State hash or index</mat-hint>

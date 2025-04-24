@@ -136,10 +136,19 @@ contract TrustedIssuersRegistry is ITrustedIssuersRegistry, HubDependentInitiali
         emit TrustedIssuerRemoved(_trustedIssuer);
     }
 
+    function updateIssuerClaimTopics(address _trustedIssuerAdr, uint256[] calldata _claimTopics) external override {
+        updateIssuerClaimTopicsInternal(msg.sender, _trustedIssuerAdr, _claimTopics);
+    }
+
+    function updateIssuerClaimTopics(address sender, address _trustedIssuerAdr, uint256[] calldata _claimTopics) external override {
+        updateIssuerClaimTopicsInternal(sender, _trustedIssuerAdr, _claimTopics);
+    }
+
     /**
      *  @dev See {ITrustedIssuersRegistry-updateIssuerClaimTopics}.
      */
-    function updateIssuerClaimTopics(address _trustedIssuerAdr, uint256[] calldata _claimTopics) external override onlyHubAgent(msg.sender) {
+    function updateIssuerClaimTopicsInternal(address sender, address _trustedIssuerAdr, uint256[] calldata _claimTopics) internal {
+        checkOnlyAgent(sender);
         require(_trustedIssuerAdr != address(0), "invalid argument - zero address");
         require(_trustedIssuerClaimTopics[_trustedIssuerAdr].length != 0, "NOT a trusted issuer");
         require(_claimTopics.length <= 15, "cannot have more than 15 claim topics");
@@ -193,7 +202,7 @@ contract TrustedIssuersRegistry is ITrustedIssuersRegistry, HubDependentInitiali
      *  @dev See {ITrustedIssuersRegistry-getTrustedIssuerClaimTopics}.
      */
     function getTrustedIssuerClaimTopics(address _trustedIssuerAdr) external view override returns (uint256[] memory) {
-        require(_trustedIssuerClaimTopics[_trustedIssuerAdr].length != 0, "trusted Issuer doesn\'t exist");
+        require(_trustedIssuerClaimTopics[_trustedIssuerAdr].length != 0, "trusted Issuer doesn't exist");
         return _trustedIssuerClaimTopics[_trustedIssuerAdr];
     }
 

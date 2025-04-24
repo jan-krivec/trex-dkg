@@ -29,6 +29,8 @@ export class DkgService extends EthereumService implements OnDestroy {
   subscription: Subscription;
   private _selectedContext: string = null;
   contextSubject: Subject<string> = new Subject<string>();
+  private _selectedType: string = null;
+  typeSubject: Subject<string> = new Subject<string>();
 
   get selectedContext() {
     return this._selectedContext;
@@ -38,6 +40,16 @@ export class DkgService extends EthereumService implements OnDestroy {
     this._selectedContext = val;
     this.contextSubject.next(val);
   }
+
+  get selectedType() {
+    return this._selectedType;
+  }
+
+  set selectedType(val) {
+    this._selectedType = val;
+    this.typeSubject.next(val);
+  }
+
 
   constructor(errorHandlerService: ErrorHandlerService) {
     super(errorHandlerService);
@@ -123,6 +135,16 @@ export class DkgService extends EthereumService implements OnDestroy {
     }
   }
 
+  async getClaimIssuer(address: string) {
+    try {
+      const claimIssuer = await this.dkg.identity.getClaimIssuer(address);
+
+      return claimIssuer;
+    } catch (e) {
+      this.errorHandlerService.displayError(e.data?.data?.reason ? e.data.data.reason : e.message);
+    }
+  }
+
   async crateIdentiy(address: string) {
     try {
       const txResponse = await this.dkg.identity.createIdentity(address);
@@ -164,7 +186,7 @@ export class DkgService extends EthereumService implements OnDestroy {
     }
   }
 
-  async isVerified(context, address: string) {
+  async isVerified(context: string, type: string, address: string) {
     // try {
     //   const txResponse = await this.identityRegistry.isVerified(address);
     //
@@ -204,6 +226,15 @@ export class DkgService extends EthereumService implements OnDestroy {
     }
   }
 
+  async getTypesClaimTopics(context: string) {
+    try {
+      const claimTopics = await this.dkg.context.getAllTypeClaimTopics(context);
+      return claimTopics;
+    } catch (e) {
+      this.errorHandlerService.displayError(e.data?.data?.reason ? e.data.data.reason : e.message);
+    }
+  }
+
   async addClaim(address: string, topic: number, data: string) {
     if (this.writeProvider != null) {
       try {
@@ -211,12 +242,16 @@ export class DkgService extends EthereumService implements OnDestroy {
         const identityAddress = await this.dkg.identity.getIdentity(address);
         const identity = await Identity.at(identityAddress, signer);
 
+        const addr = await signer.getAddress();
+
+        const issuerAdr = await this.getClaimIssuer(addr);
+
 
         // prepare the claim
         const claim = new IdentitySDK.Claim({
           address: identityAddress,
           data: IdentitySDK.utils.toHex(data),
-          issuer: '0x158d291D8b47F056751cfF47d1eEcd19FDF9B6f8',
+          issuer: issuerAdr,
           emissionDate: new Date(),
           scheme: 1,
           topic: topic,
@@ -245,7 +280,6 @@ export class DkgService extends EthereumService implements OnDestroy {
         const identity = await Identity.at(onchainId, signer);
 
         const tx = await identity.removeClaim(claimId, {signer});
-        await tx.wait();
 
         console.log(`Removed claim at tx hash ${tx.hash}`);
 
@@ -275,15 +309,16 @@ export class DkgService extends EthereumService implements OnDestroy {
     try {
       const txResponse = await this.dkg.context.deployContext(context, claimIssuers);
 
+      this.errorHandlerService.showSnackBar("Context deployed");
       return txResponse;
     } catch (e) {
       this.errorHandlerService.displayError(e.data?.data?.reason ? e.data.data.reason : e.message);
     }
   }
 
-  async addClaimTopic(context: string, claimTopic: number) {
+  async addClaimTopic(context: string, type: string, claimTopic: number) {
     try {
-      const txResponse = await this.dkg.context.addClaimTopic(context, claimTopic);
+      const txResponse = await this.dkg.context.addClaimTopic(context, type, claimTopic);
 
       return;
     } catch (e) {
@@ -291,12 +326,11 @@ export class DkgService extends EthereumService implements OnDestroy {
     }
   }
 
-  async removeClaimTopic(context: string, claimTopic: number) {
+  async removeClaimTopic(context: string, type: string, claimTopic: number) {
     try {
       if (this.writeProvider) {
-        const txResponse = await this.dkg.context.removeClaimTopic(context, claimTopic);
+        const txResponse = await this.dkg.context.removeClaimTopic(context, type, claimTopic);
 
-        await txResponse.wait();
         return;
       }
     } catch (e) {
@@ -371,6 +405,10 @@ export class DkgService extends EthereumService implements OnDestroy {
 
   async getContexts() {
     return await this.dkg.context.getContextList();
+  }
+
+  async getTypes(context: string) {
+    return await this.dkg.context.getContextTypes(context);
   }
 
   /****************************************
@@ -682,6 +720,9 @@ WHERE {
     const objectMap = new Map<string, RDFObject>();
     const referencedIds = new Set<string>();
 
+    if (!rdfData["@graph"])
+      return null;
+
     // Populate object map for quick lookup
     rdfData["@graph"].forEach(obj => {
       objectMap.set(obj["@id"], { ...obj });
@@ -713,5 +754,26 @@ WHERE {
       "@context": rdfData["@context"],
       "@graph": rdfData["@graph"].map(obj => resolveReferences(obj)).filter(obj => !referencedIds.has(obj["@id"]))
     };
+  }
+
+  async addContextType(context: string, type: string, claimIssuers: any[]) {
+    try {
+      const txResponse = await this.dkg.context.addContextType(context, type, claimIssuers);
+
+      this.errorHandlerService.showSnackBar("Type added");
+      return txResponse;
+    } catch (e) {
+      this.errorHandlerService.displayError(e.data?.data?.reason ? e.data.data.reason : e.message);
+    }
+  }
+
+  async getTypesTrustedIssuers(context: string) {
+    try {
+      const txResponse = await this.dkg.context.getAllTypesTrustedIssuers(context);
+      console.log(txResponse);
+      return txResponse;
+    } catch (e) {
+      this.errorHandlerService.displayError(e.data?.data?.reason ? e.data.data.reason : e.message);
+    }
   }
 }

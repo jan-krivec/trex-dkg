@@ -1,58 +1,82 @@
 <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center start" fxLayoutGap="5%">
     <mat-card fxFlex="20%" class="factory-card">
-      <mat-card-header>
-        <mat-card-title>Claim Topics</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-list>
-          <mat-list-item class="issuer-item" style="font-weight: bold" *ngFor="let topic of claimTopics">
-            <mat-icon matListItemIcon>circle</mat-icon>
-            {{topic}}
-          </mat-list-item>
-        </mat-list>
-      </mat-card-content>
+        <mat-card-header>
+            <mat-card-title>Claim Topics</mat-card-title>
+        </mat-card-header>
+        <mat-card-content style="overflow: hidden; display: flex; flex-direction: column">
+            <div style="height: 100%; lex: 1; overflow-y: auto; padding: 0 16px">
+                <mat-list>
+                    <mat-list-item class="issuer-item" style="font-weight: bold" *ngFor="let topic of claimTopics">
+                        <mat-icon matListItemIcon>circle</mat-icon>
+                        {{topic}}
+                    </mat-list-item>
+                </mat-list>
+                <mat-divider style="margin: 5% 0"></mat-divider>
+                <mat-card-header>
+                    <mat-card-title>Types</mat-card-title>
+                </mat-card-header>
+                <mat-list>
+                    <ng-container *ngFor="let topic2 of claimTopicsTypes">
+                        <mat-list-item style="font-weight: bold; height: 20px; margin-top: 20px">
+                            <mat-icon matListItemIcon>circle</mat-icon>
+                            <div matListItemTitle style="font-weight: 500; font-size: 1.1rem"
+                                 class="issuer-item">{{topic2.typeName}}</div>
+                        </mat-list-item>
+                        <mat-list style="margin-left:30px;">
+                            <div *ngFor="let subItem of topic2.claimTopics">
+                                <mat-list-item>
+                                    <mat-icon matListItemIcon>circle</mat-icon>
+                                    <div matListItemTitle
+                                         class="issuer-item">{{subItem}}</div>
+                                </mat-list-item>
+                            </div>
+                        </mat-list>
+                    </ng-container>
+                </mat-list>
+            </div>
+        </mat-card-content>
     </mat-card>
 
     <mat-card fxFlex="45%" class="factory-card">
-      <mat-card-header>
-        <mat-card-title>Claim Topics Registry</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="car-tab">
-          <mat-card-subtitle class="subtitle">Add Claim Topic</mat-card-subtitle>
+        <mat-card-header>
+            <mat-card-title>Claim Topics Registry</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="car-tab">
+                <mat-card-subtitle class="subtitle">Add Claim Topic</mat-card-subtitle>
 
-          <form class="center-content" [formGroup]="addTopicForm" (ngSubmit)="addClaimTopic()">
+                <form class="center-content" [formGroup]="addTopicForm" (ngSubmit)="addClaimTopic()">
 
-            <div style="width: 90%">
-              <mat-form-field fxFlex="100%">
-                <mat-label>Claim Topic</mat-label>
-                <input matInput formControlName="topic" type="number">
-              </mat-form-field>
+                    <div style="width: 90%">
+                        <mat-form-field appearance="outline" fxFlex="100%">
+                            <mat-label>Claim Topic</mat-label>
+                            <input matInput formControlName="topic" type="number">
+                        </mat-form-field>
+                    </div>
+
+                    <button type="submit" mat-raised-button>Add Claim Topic</button>
+
+                </form>
+
+                <mat-divider style="margin: 3% 0"></mat-divider>
+
+                <mat-card-subtitle class="subtitle">Remove Claim Topic</mat-card-subtitle>
+
+                <form class="center-content" [formGroup]="removeTopicForm" (ngSubmit)="removeClaimTopic()">
+
+                    <div style="width: 90%">
+                        <mat-form-field appearance="outline" fxFlex="100%">
+                            <mat-label>Claim Topic</mat-label>
+                            <input matInput formControlName="topic" type="number">
+                        </mat-form-field>
+                    </div>
+
+                    <button type="submit" mat-raised-button>Remove Claim Topic</button>
+
+                </form>
+
             </div>
-
-            <button type="submit" mat-raised-button>Add Claim Topic</button>
-
-          </form>
-
-          <mat-divider style="margin: 3% 0"></mat-divider>
-
-          <mat-card-subtitle class="subtitle">Remove Claim Topic</mat-card-subtitle>
-
-          <form class="center-content" [formGroup]="removeTopicForm" (ngSubmit)="removeClaimTopic()">
-
-            <div style="width: 90%">
-              <mat-form-field fxFlex="100%">
-                <mat-label>Claim Topic</mat-label>
-                <input matInput formControlName="topic" type="number">
-              </mat-form-field>
-            </div>
-
-            <button type="submit" mat-raised-button>Remove Claim Topic</button>
-
-          </form>
-
-        </div>
-      </mat-card-content>
+        </mat-card-content>
     </mat-card>
 
 </div>

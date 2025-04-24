@@ -41,6 +41,26 @@ class IdentityOperationsManager {
     }
 
     /**
+     * Gets claim issuer address.
+     * @async
+     * @param issuer Issuer metamask address
+     * @param {Object} [options={}] - Additional options for asset creation.
+     * @returns {Object}
+     */
+    async getClaimIssuer(issuer, options = {}) {
+        const blockchain = this.inputService.getBlockchain(options);
+
+        const issuerAdr = await this.blockchainService.callContractFunction(
+            'IdFactory',
+            'getClaimIssuer',
+            [issuer],
+            blockchain
+        )
+
+        return issuerAdr;
+    }
+
+    /**
      * Creates a new identity.
      * @async
      * @param {string} address - The addressof the identity to be created

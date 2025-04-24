@@ -80,8 +80,8 @@ contract ContentAsset is Named, Versioned, HubDependent, DkgInitializable {
         _;
     }
 
-    modifier onlyVerifiedContext(string[] memory _contexts) {
-        hub.checkContextVerified(_contexts, msg.sender);
+    modifier onlyVerifiedContext(string[] memory _contexts, string[][] memory _types) {
+        hub.checkContextVerified(_contexts, _types, msg.sender);
         _;
     }
 
@@ -93,7 +93,7 @@ contract ContentAsset is Named, Versioned, HubDependent, DkgInitializable {
         return _VERSION;
     }
 
-    function createAsset(ContentAssetStructs.AssetInputArgs calldata args) onlyVerifiedContext(args.contexts) external {
+    function createAsset(ContentAssetStructs.AssetInputArgs calldata args) onlyVerifiedContext(args.contexts, args.types) external {
         _createAsset(
             args.assertionId,
             args.size,
@@ -108,6 +108,7 @@ contract ContentAsset is Named, Versioned, HubDependent, DkgInitializable {
 
     function createAssetWithVariables(
         string[] memory contexts,
+        string[][] memory types,
         bytes32 assertionId,
         uint128 size,
         uint32 triplesNumber,
@@ -116,7 +117,7 @@ contract ContentAsset is Named, Versioned, HubDependent, DkgInitializable {
         uint96 tokenAmount,
         uint8 scoreFunctionId,
         bool immutable_
-    ) external onlyVerifiedContext(contexts) {
+    ) external onlyVerifiedContext(contexts, types) {
         _createAsset(
             assertionId,
             size,
@@ -182,12 +183,13 @@ contract ContentAsset is Named, Versioned, HubDependent, DkgInitializable {
     function updateAssetState(
         uint256 tokenId,
         string[] memory contexts,
+        string[][] memory types,
         bytes32 assertionId,
         uint128 size,
         uint32 triplesNumber,
         uint96 chunksNumber,
         uint96 updateTokenAmount
-    ) external onlyVerifiedContext(contexts) onlyAssetOwner(tokenId) onlyMutable(tokenId) {
+    ) external onlyVerifiedContext(contexts, types) onlyAssetOwner(tokenId) onlyMutable(tokenId) {
         ContentAssetStorage cas = contentAssetStorage;
         UnfinalizedStateStorage uss = unfinalizedStateStorage;
         ServiceAgreementStorageProxy sasProxy = serviceAgreementStorageProxy;

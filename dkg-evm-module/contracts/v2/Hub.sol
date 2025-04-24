@@ -95,10 +95,4 @@ contract HubV2 is Named, Versioned, AgentRole {
     function isAssetStorage(address assetStorageAddress) external view returns (bool) {
         return assetStorageSet.exists(assetStorageAddress);
     }
-
-    function checkContextVerified(string[] memory _contexts, address user) external view virtual{
-        for (uint256 i = 0; i < _contexts.length; i++) {
-            require(trexFactory.isContextVerified(_contexts[i], user), string(abi.encodePacked("Context is not verified: ", _contexts[i])));
-        }
-    }
 }

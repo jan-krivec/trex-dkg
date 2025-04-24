@@ -9,7 +9,6 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import "../TREX/factory/ITREXFactory.sol";
 import "./roles/AgentRole.sol";
 
-
 contract Hub is Named, Versioned, AgentRole {
     using UnorderedNamedContractDynamicSetLib for UnorderedNamedContractDynamicSetLib.Set;
 
@@ -17,6 +16,8 @@ contract Hub is Named, Versioned, AgentRole {
     event ContractChanged(string contractName, address newContractAddress);
     event NewAssetStorage(string contractName, address newContractAddress);
     event AssetStorageChanged(string contractName, address newContractAddress);
+
+    event ContextEvent(string contextName, string types);
 
     string private constant _NAME = "Hub";
     string private constant _VERSION = "1.0.0";
@@ -96,9 +97,22 @@ contract Hub is Named, Versioned, AgentRole {
         return assetStorageSet.exists(assetStorageAddress);
     }
 
-    function checkContextVerified(string[] memory _contexts, address user) external view virtual{
+    function checkContextVerified(string[] memory _contexts, string[][] memory _types, address user) external virtual{
         for (uint256 i = 0; i < _contexts.length; i++) {
-            require(trexFactory.isContextVerified(_contexts[i], user), string(abi.encodePacked("Context is not verified: ", _contexts[i])));
+            string memory joinedTypes = joinStrings(_types[i], ",");
+            emit ContextEvent(_contexts[i], joinedTypes);
+            require(trexFactory.isContextVerified(_contexts[i], _types[i], user), string(abi.encodePacked("Context is not verified: ", _contexts[i])));
         }
+    }
+
+    function joinStrings(string[] memory strings, string memory delimiter) internal pure returns (string memory) {
+        bytes memory result;
+        for (uint i = 0; i < strings.length; i++) {
+            result = abi.encodePacked(result, strings[i]);
+            if (i < strings.length - 1) {
+                result = abi.encodePacked(result, delimiter);
+            }
+        }
+        return string(result);
     }
 }
