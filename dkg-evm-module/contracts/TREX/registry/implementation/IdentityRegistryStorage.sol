@@ -81,10 +81,16 @@ contract IdentityRegistryStorage is IIdentityRegistryStorage, AgentRoleUpgradeab
         _;
     }
 
+    modifier checkIsAgent(address sender) {
+        require(isHubAgent(sender) || isAgent(sender), "Caller must be agent.") ;
+        _;
+    }
+
     function addIdentityToStorage(
+        address sender,
         address _userAddress,
         IIdentity _identity
-    ) public checkAgent{
+    ) public checkIsAgent(sender) {
         require(
             _userAddress != address(0)
             && address(_identity) != address(0)

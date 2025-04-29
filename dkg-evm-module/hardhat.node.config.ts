@@ -17,31 +17,6 @@ const config: HardhatUserConfig = {
     deployer: 0,
     minter: 0,
   },
-  networks: {
-    localhost: {
-      environment: 'development',
-      url: 'http://0.0.0.0:8545',
-      chainId: 1337,
-    },
-    hardhat: {
-      environment: 'development',
-      chainId: 31337,
-      gas: 20_000_000,
-      gasMultiplier: 1,
-      blockGasLimit: 30_000_000,
-      hardfork: 'london',
-      accounts: { count: 200 },
-      throwOnTransactionFailures: true,
-      throwOnCallFailures: true,
-      loggingEnabled: true,
-      allowUnlimitedContractSize: true,
-      saveDeployments: false,
-      mining: {
-        auto: true,
-        interval: 5000,
-      },
-    },
-  },
   solidity: {
     compilers: [
       {
@@ -72,6 +47,31 @@ const config: HardhatUserConfig = {
     overrides: {
       'contracts/v1/MultiSigWallet.sol': {
         version: '0.4.16',
+      },
+    },
+  },
+  networks: {
+    localhost: {
+      environment: 'development',
+      url: 'http://0.0.0.0:8545',
+      chainId: 1337,
+    },
+    hardhat: {
+      environment: 'development',
+      chainId: 31337,
+      gas: 20_000_000,
+      gasMultiplier: 1,
+      blockGasLimit: 30_000_000,
+      hardfork: 'london',
+      accounts: { count: 200 },
+      throwOnTransactionFailures: true,
+      throwOnCallFailures: true,
+      loggingEnabled: true,
+      allowUnlimitedContractSize: true,
+      saveDeployments: false,
+      mining: {
+        auto: true,
+        interval: 5000,
       },
     },
   },

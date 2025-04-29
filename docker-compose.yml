@@ -8,6 +8,8 @@ services:
       MYSQL_ROOT_PASSWORD: null
       MYSQL_DATABASE: operationaldb
       MYSQL_MAX_CONNECTIONS: 10000
+    ports:
+      - "3306:3306"
     expose:
       - 3306
     networks:
@@ -73,11 +75,6 @@ services:
     ports:
       - "8545:8545"  # ot-node-docker application port
       - "9545:9545"  # ot-node-docker application port
-    volumes:
-      - ./dkg-evm-module:/app
-      - dkg_node_modules:/app/node_modules
-      - dkg_hardhat_cache:/app/cache
-      - dkg_hardhat_data:/app/.hardhat
     expose:
       - 8545
       - 9545
@@ -126,8 +123,3 @@ services:
 networks:
   my-network:
     driver: bridge
-
-volumes:
-  dkg_node_modules:
-  dkg_hardhat_cache:
-  dkg_hardhat_data:

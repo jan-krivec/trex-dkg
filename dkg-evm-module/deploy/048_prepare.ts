@@ -82,6 +82,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   for (const i in adresses) {
     const identity = await IdFactory.createIdentity(adresses[i], adresses[i]);
     console.log('Created identity for address ' + adresses[i]);
+    await trexFactory.registerIdentity(adresses[i]);
   }
 
   // const mnemonic = 'test test test test test test test test test test test junk';

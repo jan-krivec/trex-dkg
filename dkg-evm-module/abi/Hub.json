@@ -61,25 +61,6 @@
       {
         "indexed": false,
         "internalType": "string",
-        "name": "contextName",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "types",
-        "type": "string"
-      }
-    ],
-    "name": "ContextEvent",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "string",
         "name": "contractName",
         "type": "string"
       },
@@ -183,7 +164,7 @@
     ],
     "name": "checkContextVerified",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {

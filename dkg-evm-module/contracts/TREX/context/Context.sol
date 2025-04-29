@@ -63,10 +63,10 @@ contract Context is IContext, AgentRoleUpgradeable {
         return _contextName;
     }
 
-    function adresses() external view returns (address identityRegistry,
-                                               address modularCompliance,
-                                               address trustedIssuersRegistry,
-                                               address claimTopicsRegistry) {
+    function adresses() external view returns (address _identityRegistry,
+                                               address _modularCompliance,
+                                               address _trustedIssuersRegistry,
+                                               address _claimTopicsRegistry) {
         address ir = address(_contextIdentityRegistry);
         address mc = address(_contextCompliance);
         address tir = address(_contextIdentityRegistry.issuersRegistry());
@@ -100,7 +100,10 @@ contract Context is IContext, AgentRoleUpgradeable {
     }
 
     function isVerified(string[] memory types, address user) external view override returns (bool){
-        return _contextIdentityRegistry.isVerified(user);
+        if (!_contextIdentityRegistry.isVerified(user)) {
+            return false;
+        }
+        return _contextIdentityRegistry.isVerifiedForTypes(user, types);
     }
 
     function isVerifiedTransfer(string[] memory types, address from, address to) external view override returns (bool){

@@ -194,8 +194,8 @@ contract TREXFactory is ITREXFactory, HubDependent {
         emit TREXSuiteDeployed(address(context), address(mc), _context);
     }
 
-    function addContextType(string memory context, string memory typeName, address[] memory issuers, uint256[] memory claimTopics, uint256[][] memory issuerClaims) external override onlyAgent {
-        address contextAdr = contextDeployed[context];
+    function addContextType(string memory _context, string memory typeName, address[] memory issuers, uint256[] memory claimTopics, uint256[][] memory issuerClaims) external override onlyAgent {
+        address contextAdr = contextDeployed[_context];
         IContext context = IContext(contextAdr);
         (address modularCompliance, address identityRegistry, address trustedIssuersRegistry, address claimTopicsRegistry) = context.adresses();
         ITrustedIssuersRegistry tir = ITrustedIssuersRegistry(trustedIssuersRegistry);
@@ -392,7 +392,7 @@ contract TREXFactory is ITREXFactory, HubDependent {
         IIdFactory idFactory = IIdFactory(_idFactory);
         address _identityAddress = idFactory.getIdentity(_userAddress);
         IIdentity _identity = IIdentity(_identityAddress);
-        factoryIdentityRegistryStorage.addIdentityToStorage(_userAddress, _identity);
+        factoryIdentityRegistryStorage.addIdentityToStorage(msg.sender, _userAddress, _identity);
     }
 
     function deleteIdentity(address _userAddress) external override onlyAgent {

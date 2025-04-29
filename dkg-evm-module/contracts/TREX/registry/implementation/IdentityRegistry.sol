@@ -299,7 +299,7 @@ contract IdentityRegistry is IIdentityRegistry, HubDependentInitializable, IRSto
         address _userAddress,
         IIdentity _identity
     ) public override onlyHubAgent(msg.sender) {
-        _contextIdentityStorage.addIdentityToStorage(_userAddress, _identity);
+        _contextIdentityStorage.addIdentityToStorage(msg.sender, _userAddress, _identity);
         emit IdentityRegistered(_userAddress, _identity);
     }
 

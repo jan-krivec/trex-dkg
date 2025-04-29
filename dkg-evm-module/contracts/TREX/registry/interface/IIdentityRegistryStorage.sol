@@ -117,6 +117,7 @@ interface IIdentityRegistryStorage {
      *  emits `IdentityStored` event
      */
     function addIdentityToStorage(
+        address sender,
         address _userAddress,
         IIdentity _identity
     ) external;

@@ -145,7 +145,7 @@ class ContextOperationsManager {
 
         const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
-        const {claimTopicsRegistry} = await this.blockchainService.callContractFunction(
+        const {_claimTopicsRegistry} = await this.blockchainService.callContractFunction(
             'Context',
             'adresses',
             [],
@@ -158,7 +158,7 @@ class ContextOperationsManager {
             type == null ? 'getClaimTopics' : 'getTypeClaimTopics',
             type == null ? [] : [type],
             blockchain,
-            claimTopicsRegistry
+            _claimTopicsRegistry
         );
 
         return claimTopics;
@@ -169,7 +169,7 @@ class ContextOperationsManager {
 
         const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
-        const {claimTopicsRegistry} = await this.blockchainService.callContractFunction(
+        const {_claimTopicsRegistry} = await this.blockchainService.callContractFunction(
             'Context',
             'adresses',
             [],
@@ -182,7 +182,7 @@ class ContextOperationsManager {
             'getAllTypeClaimTopics',
             [],
             blockchain,
-            claimTopicsRegistry
+            _claimTopicsRegistry
         );
 
         return claimTopics;
@@ -202,7 +202,7 @@ class ContextOperationsManager {
 
         const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
-        const {claimTopicsRegistry} = await this.blockchainService.callContractFunction(
+        const {_claimTopicsRegistry} = await this.blockchainService.callContractFunction(
             'Context',
             'adresses',
             [],
@@ -215,7 +215,7 @@ class ContextOperationsManager {
             type == null ? 'addClaimTopic' : 'addTypeClaimTopic',
             type == null ? [claimTopic]: [type, claimTopic],
             blockchain,
-            claimTopicsRegistry
+            _claimTopicsRegistry
         )
 
         console.log(res);
@@ -236,7 +236,7 @@ class ContextOperationsManager {
 
         const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
-        const {claimTopicsRegistry} = await this.blockchainService.callContractFunction(
+        const {_claimTopicsRegistry} = await this.blockchainService.callContractFunction(
             'Context',
             'adresses',
             [],
@@ -249,7 +249,7 @@ class ContextOperationsManager {
             type == null ? 'removeClaimTopic' : 'removeTypeClaimTopic',
             type == null ? [claimTopic]: [type, claimTopic],
             blockchain,
-            claimTopicsRegistry
+            _claimTopicsRegistry
         )
     }
 
@@ -265,7 +265,7 @@ class ContextOperationsManager {
 
         const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
-        const {trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
+        const {_trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
             'Context',
             'adresses',
             [],
@@ -278,7 +278,7 @@ class ContextOperationsManager {
             'getTrustedIssuers',
             [],
             blockchain,
-            trustedIssuersRegistry
+            _trustedIssuersRegistry
         );
     }
 
@@ -295,7 +295,7 @@ class ContextOperationsManager {
 
         const contextAddress = this.blockchainService.getContextAddress(context, blockchain);
 
-        const {trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
+        const {_trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
             'Context',
             'adresses',
             [],
@@ -308,7 +308,7 @@ class ContextOperationsManager {
             'isTrustedIssuer',
             [claimIssuer],
             blockchain,
-            trustedIssuersRegistry
+            _trustedIssuersRegistry
         )
     }
 
@@ -325,7 +325,7 @@ class ContextOperationsManager {
 
         const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
-        const {trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
+        const {_trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
             'Context',
             'adresses',
             [],
@@ -338,7 +338,7 @@ class ContextOperationsManager {
             'getTrustedIssuerClaimTopics',
             [claimIssuer],
             blockchain,
-            trustedIssuersRegistry
+            _trustedIssuersRegistry
         )
     }
 
@@ -356,7 +356,7 @@ class ContextOperationsManager {
 
         const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
-        const {trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
+        const {_trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
             'Context',
             'adresses',
             [],
@@ -369,7 +369,7 @@ class ContextOperationsManager {
             'addTrustedIssuer',
             [claimIssuer, claimTopics],
             blockchain,
-            trustedIssuersRegistry
+            _trustedIssuersRegistry
         )
         return receipt;
     }
@@ -388,7 +388,7 @@ class ContextOperationsManager {
 
         const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
-        const {trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
+        const {_trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
             'Context',
             'adresses',
             [],
@@ -401,7 +401,7 @@ class ContextOperationsManager {
             'updateIssuerClaimTopics',
             [claimIssuer, claimTopics],
             blockchain,
-            trustedIssuersRegistry
+            _trustedIssuersRegistry
         )
         return receipt;
     }
@@ -419,7 +419,7 @@ class ContextOperationsManager {
 
         const contextAddress = await this.blockchainService.getContextAddress(context, blockchain);
 
-        const {trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
+        const {_trustedIssuersRegistry} = await this.blockchainService.callContractFunction(
             'Context',
             'adresses',
             [],
@@ -432,7 +432,7 @@ class ContextOperationsManager {
             'removeTrustedIssuer',
             [claimIssuer],
             blockchain,
-            trustedIssuersRegistry
+            _trustedIssuersRegistry
         )
         return receipt;
     }

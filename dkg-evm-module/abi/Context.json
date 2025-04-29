@@ -102,22 +102,22 @@
     "outputs": [
       {
         "internalType": "address",
-        "name": "identityRegistry",
+        "name": "_identityRegistry",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "modularCompliance",
+        "name": "_modularCompliance",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "trustedIssuersRegistry",
+        "name": "_trustedIssuersRegistry",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "claimTopicsRegistry",
+        "name": "_claimTopicsRegistry",
         "type": "address"
       }
     ],

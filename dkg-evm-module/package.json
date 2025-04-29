@@ -104,7 +104,7 @@
     "deploy:v2": "hardhat deploy --tags v1,v2",
     "dev:v1": "hardhat node --network hardhat --config hardhat.node.config.ts --tags v1",
     "dev:v2": "hardhat node --network hardhat --config hardhat.node.config.ts --tags v1,v2",
-    "dev": "hardhat node --network hardhat --config hardhat.node.config.ts --show-stack-traces --verbose --tags v1",
+    "dev": "hardhat node --network hardhat --config hardhat.node.config.ts --tags v1",
     "export-abi": "hardhat export-abi",
     "format:fix": "prettier --write '**/*.{json,js,ts,sol}'",
     "format": "prettier --check '**/*.{json,js,ts,sol}'",

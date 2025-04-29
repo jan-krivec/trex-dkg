@@ -110,10 +110,10 @@ interface IContext {
     /**
      * @dev Returns addresses of linked smart contracts
      */
-    function adresses() external view returns (address modularCompliance,
-                                               address identityRegistry,
-                                               address trustedIssuersRegistry,
-                                               address claimTopicsRegistry);
+    function adresses() external view returns (address _modularCompliance,
+                                               address _identityRegistry,
+                                               address _trustedIssuersRegistry,
+                                               address _claimTopicsRegistry);
 
     /**
      *  @dev Returns the Identity Registry linked to the context
