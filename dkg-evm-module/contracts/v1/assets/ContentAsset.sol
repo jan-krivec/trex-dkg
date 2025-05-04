@@ -477,16 +477,28 @@ contract ContentAsset is Named, Versioned, HubDependent, DkgInitializable {
         bool immutable_
     ) internal virtual {
         ContentAssetStorage cas = contentAssetStorage;
+        require(address(cas) != address(0), "ContentAssetStorage not initialized");
 
         uint256 tokenId = cas.generateTokenId();
-        cas.mint(msg.sender, tokenId);
+        require(tokenId > 0, "Invalid token ID generated");
 
+        cas.mint(msg.sender, tokenId);
+        require(cas.ownerOf(tokenId) == msg.sender, "Minting failed - ownership not set");
+
+        require(address(assertionContract) != address(0), "Assertion contract not initialized");
         assertionContract.createAssertion(assertionId, size, triplesNumber, chunksNumber);
+
         cas.setAssertionIssuer(tokenId, assertionId, msg.sender);
+        require(cas.getAssertionIssuer(tokenId, assertionId, 0) == msg.sender, "Assertion issuer not set correctly");
+
         cas.setMutability(tokenId, immutable_);
+        require(cas.isMutable(tokenId) == !immutable_, "Mutability not set correctly");
+
         cas.pushAssertionId(tokenId, assertionId);
+        require(cas.getAssertionIdByIndex(tokenId, 0) == assertionId, "Assertion ID not pushed correctly");
 
         address contentAssetStorageAddress = address(cas);
+        require(contentAssetStorageAddress != address(0), "Invalid content asset storage address");
 
         serviceAgreementV1.createServiceAgreement(
             ServiceAgreementStructsV1.ServiceAgreementInputArgs({

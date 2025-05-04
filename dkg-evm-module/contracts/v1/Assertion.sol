@@ -39,7 +39,7 @@ contract Assertion is Named, Versioned, ContractStatus, DkgInitializable {
         uint96 chunksNumber
     ) external onlyContracts {
         AssertionStorage ans = assertionStorage;
-
+        require(address(ans) != address(0), "Assertion storage can not be null");
         require(assertionId != bytes32(0), "Assertion ID cannot be empty");
         require(size != 0, "Size cannot be 0");
         require(triplesNumber != 0, "Triples number cannot be 0");
