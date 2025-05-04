@@ -17,8 +17,6 @@ contract Hub is Named, Versioned, AgentRole {
     event NewAssetStorage(string contractName, address newContractAddress);
     event AssetStorageChanged(string contractName, address newContractAddress);
 
-    event ContextEvent(string contextName, string types);
-
     string private constant _NAME = "Hub";
     string private constant _VERSION = "1.0.0";
 
@@ -97,10 +95,8 @@ contract Hub is Named, Versioned, AgentRole {
         return assetStorageSet.exists(assetStorageAddress);
     }
 
-    function checkContextVerified(string[] memory _contexts, string[][] memory _types, address user) external virtual{
+    function checkContextVerified(string[] memory _contexts, string[][] memory _types, address user) external view virtual{
         for (uint256 i = 0; i < _contexts.length; i++) {
-            string memory joinedTypes = joinStrings(_types[i], ",");
-            emit ContextEvent(_contexts[i], joinedTypes);
             require(trexFactory.isContextVerified(_contexts[i], _types[i], user), string(abi.encodePacked("Context is not verified: ", _contexts[i])));
         }
     }

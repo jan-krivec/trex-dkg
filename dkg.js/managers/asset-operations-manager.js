@@ -367,9 +367,6 @@ class AssetOperationsManager {
             contextTypes.push(contextDict[pc]);
         }
 
-        console.log(publicContext);
-        console.log(contextTypes);
-
         try {
             if (paranetUAL == null) {
                 ({tokenId, receipt: mintKnowledgeAssetReceipt} = await this.blockchainService.createAsset(
