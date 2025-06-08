@@ -43,30 +43,6 @@ services:
       retries: 10
       start_period: 15s
 
-#  blockscanner1:
-#    image: alethio/ethereum-lite-explorer
-#    container_name: blockscanner1
-#    ports:
-#      - "8080:80"  # Accessible at http://localhost:8080
-#    environment:
-#      - APP_NODE_URL=http://localhost:8545
-#    networks:
-#      - my-network
-#    depends_on:
-#      - dkg-evm-module
-#
-#  blockscanner2:
-#    image: alethio/ethereum-lite-explorer
-#    container_name: blockscanner2
-#    ports:
-#      - "8081:80"  # Accessible at http://localhost:8081
-#    environment:
-#      - APP_NODE_URL=http://localhost:9545
-#    networks:
-#      - my-network
-#    depends_on:
-#      - dkg-evm-module
-
   dkg-evm-module:
     build:
       context: .
@@ -95,6 +71,13 @@ services:
     container_name: ot-node
     ports:
       - "8900:8900"  # ot-node-docker application port
+      - "8901:8901"  # ot-node-docker application port
+      - "8902:8902"  # ot-node-docker application port
+      - "8903:8903"  # ot-node-docker application port
+      - "8904:8904"  # ot-node-docker application port
+      - "8905:8905"  # ot-node-docker application port
+      - "8906:8906"  # ot-node-docker application port
+      - "8907:8907"  # ot-node-docker application port
     environment:
       - NODE_ENV=development
     networks:

@@ -85,7 +85,7 @@ export class EthereumService implements OnInit, OnDestroy {
     this.dkg = new DKG({
       environment: 'development', // or devnet, testnet, mainnet
       endpoint: 'http://localhost',  // gateway node URI
-      port: 8900,
+      port: 8906,
       blockchain: {
         name: 'hardhat1:31337', // or otp:2043, base:8453, gnosis:100
         rpc: 'http://localhost:8545'

@@ -23,6 +23,10 @@ $theme: mat.define-light-theme((
 // that you are using.
 @include mat.all-component-themes($theme);
 
+body {
+  background: #cccccc;
+}
+
 .card-content {
   display: flex;           /* Ensures the use of Flexbox */
   flex-direction: column;  /* Stacks the children vertically */

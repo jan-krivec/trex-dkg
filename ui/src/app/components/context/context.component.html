@@ -2,9 +2,9 @@
   <!-- Subtract the height of the toolbar (e.g., 64px) from the 100vh if there's a fixed toolbar at the top -->
 
 
-  <div fxLayout="row" style="width: 80vw; margin-top: 30px" fxLayout.xs="column" fxLayoutAlign="center start">
-    <mat-card fxFlex="25%" style="margin-bottom: 30px; align-items: center; width: 25%">
-      <div *ngIf="true" fxLayout="row" style="width: 80%; margin-top: 15px" [ngStyle]="{'margin-bottom': this.isAddType ? '15px': null}" fxLayout.xs="column" fxLayoutAlign="center center" fxLayoutGap="5%">
+  <div fxLayout="row" style="width: 80vw; margin-top: 30px" fxLayout.xs="column" fxLayoutAlign="center center">
+    <mat-card fxFlex="35%" style="margin-bottom: 30px; align-items: center;">
+      <div *ngIf="true" fxLayout="row" style="width: 80%; margin-top: 15px" [ngStyle]="{'margin-bottom': this.contextClaimTopics ? '15px': null}" fxLayout.xs="column" fxLayoutAlign="center center" fxLayoutGap="5%">
         <mat-form-field appearance="outline" >
           <mat-label>Context</mat-label>
           <mat-select [(value)]="this.selectedContext">
@@ -12,7 +12,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div *ngIf="!this.isAddType" fxLayout="row" style="width: 80%;" fxLayout.xs="column" fxLayoutAlign="center center">
+      <div *ngIf="this.contextClaimTopics" fxLayout="row" style="width: 80%;" fxLayout.xs="column" fxLayoutAlign="center center">
         <mat-slide-toggle
           [(ngModel)]="this.useType">
           Use Type
@@ -28,7 +28,7 @@
   </div>
 
 
-  <div fxLayout="row" style="width: 80vw;" fxLayout.xs="column" fxLayoutAlign="center center" fxLayoutGap="5%">
+  <div fxLayout="row" style="width: 80vw;" fxLayout.xs="column" fxLayoutAlign="center center">
 
 
       <router-outlet></router-outlet>

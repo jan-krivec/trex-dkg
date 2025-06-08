@@ -1,5 +1,5 @@
 <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center start" fxLayoutGap="5%">
-    <mat-card fxFlex="20%" class="factory-card">
+    <mat-card fxFlex="30%" class="factory-card">
         <mat-card-header>
             <mat-card-title>Claim Topics</mat-card-title>
         </mat-card-header>
@@ -19,7 +19,7 @@
                     <ng-container *ngFor="let topic2 of claimTopicsTypes">
                         <mat-list-item style="font-weight: bold; height: 20px; margin-top: 20px">
                             <mat-icon matListItemIcon>circle</mat-icon>
-                            <div matListItemTitle style="font-weight: 500; font-size: 1.1rem"
+                            <div matListItemTitle style="font-weight: 500"
                                  class="issuer-item">{{topic2.typeName}}</div>
                         </mat-list-item>
                         <mat-list style="margin-left:30px;">
@@ -37,7 +37,7 @@
         </mat-card-content>
     </mat-card>
 
-    <mat-card fxFlex="45%" class="factory-card">
+    <mat-card fxFlex="35%" class="factory-card">
         <mat-card-header>
             <mat-card-title>Claim Topics Registry</mat-card-title>
         </mat-card-header>

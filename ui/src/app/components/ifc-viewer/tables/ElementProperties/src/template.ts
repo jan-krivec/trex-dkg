@@ -292,6 +292,7 @@ const processValue = (key, value): BUI.TableGroupData => {
 const getCustomRow = async (getFunction, expressId) => {
   const row: BUI.TableGroupData = {data: {Name: "Custom"}};
   const data = await getFunction(expressId);
+  if (data == null) return null;
   let graph = data['@graph']
   // try {
   //   if (graph.length > 0) {

@@ -568,6 +568,8 @@ WHERE {
     const response = await this.dkg.graph.query(sparql, 'CONSTRUCT');
     const data = response.data;
 
+    if (data.length == 0) return null;
+
     const context = {
       "brick": "https://brickschema.org/schema/Brick#",
       "bf": "https://brickschema.org/schema/BrickFrame#",
@@ -614,6 +616,7 @@ WHERE {
   }
 
   extractGraph(jsonLd) {
+    if (jsonLd == null) return null;
     if (!jsonLd["@graph"] || !Array.isArray(jsonLd["@graph"])) {
       throw new Error("Invalid JSON-LD: Missing @graph array");
     }

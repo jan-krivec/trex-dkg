@@ -11,7 +11,7 @@ export class ContextComponent implements OnInit, OnDestroy, AfterViewInit{
   public contexts: string[];
   public types: string[];
   public useType: boolean = false;
-  public isAddType: boolean = false;
+  public contextClaimTopics: boolean = false;
   private routerSubscription: Subscription;
 
   constructor(private dkgService: DkgService, private router: Router) { };
@@ -37,10 +37,10 @@ export class ContextComponent implements OnInit, OnDestroy, AfterViewInit{
   checkRoute() {
     const urlSegments = this.router.url.split('/');
     const lastSegment = urlSegments[urlSegments.length - 1];
-    if (lastSegment === 'addType') {
-      this.isAddType = true;
+    if (['topicsRegistry', 'identityRegistry'].includes(lastSegment)) {
+      this.contextClaimTopics = true;
     } else {
-      this.isAddType = false;
+      this.contextClaimTopics = false;
     }
   }
 

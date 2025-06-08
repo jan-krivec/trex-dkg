@@ -51,13 +51,15 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   console.log('Deploying context');
 
-  await trexFactory.deployContext(
+  const transaction = await trexFactory.deployContext(
     'https://schema.org',
     { complianceModules: [], complianceSettings: [] },
     { claimTopics: [1], issuers: [claimIssuer1.address], issuerClaims: [[1]] },
   );
 
-  console.log('Context 1 deployed');
+  const receipt = await transaction.wait();
+
+  console.log('Context 1 deployed - Gas used: ' + receipt.gasUsed.toString());
 
   console.log('IdFactory address:', IdFactory.address);
 
@@ -80,9 +82,14 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   ];
 
   for (const i in adresses) {
-    const identity = await IdFactory.createIdentity(adresses[i], adresses[i]);
-    console.log('Created identity for address ' + adresses[i]);
-    await trexFactory.registerIdentity(adresses[i]);
+    const createTx = await IdFactory.createIdentity(adresses[i], adresses[i]);
+    const createReceipt = await createTx.wait();
+    console.log(`Created identity for address ${adresses[i]} - Gas used: ${createReceipt.gasUsed.toString()}`);
+
+    // Call registerIdentity and wait for the transaction receipt
+    const registerTx = await trexFactory.registerIdentity(adresses[i]);
+    const registerReceipt = await registerTx.wait();
+    console.log(`Registered identity for address ${adresses[i]} - Gas used: ${registerReceipt.gasUsed.toString()}`);
   }
 
   // const mnemonic = 'test test test test test test test test test test test junk';
