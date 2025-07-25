@@ -94,8 +94,6 @@ services:
       context: .
       dockerfile: ui.Dockerfile
     container_name: ui
-    ports:
-      - "4200:4200"
     working_dir: /app/ui
     depends_on:
       - ot-node
@@ -103,6 +101,23 @@ services:
     command: ["npm", "start"]
     networks:
       - my-network
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
+    container_name: nginx-proxy
+    ports:
+      - "443:443"
+    volumes:
+      - nginx-certs:/etc/nginx/certs
+    depends_on:
+      - ui
+    networks:
+      - my-network
 networks:
   my-network:
     driver: bridge
+
+volumes:
+  nginx-certs:
