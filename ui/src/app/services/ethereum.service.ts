@@ -81,14 +81,14 @@ export class EthereumService implements OnInit, OnDestroy {
   }
 
   constructor(public errorHandlerService: ErrorHandlerService) {
-    this._readProvider = new ethers.providers.JsonRpcProvider('http://hardhat-network:8545');
+    this._readProvider = new ethers.providers.JsonRpcProvider('http://193.2.72.90:8545');
     this.dkg = new DKG({
       environment: 'development', // or devnet, testnet, mainnet
       endpoint: 'http://193.2.72.90',  // gateway node URI
       port: 8906,
       blockchain: {
         name: 'hardhat1:31337', // or otp:2043, base:8453, gnosis:100
-        rpc: 'http://hardhat-network:8545'
+        rpc: 'http://193.2.72.90:8545'
       },
     });
   }
