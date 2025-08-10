@@ -84,10 +84,10 @@ export class EthereumService implements OnInit, OnDestroy {
     this._readProvider = new ethers.providers.JsonRpcProvider('https://193.2.72.90/evm1');
     this.dkg = new DKG({
       environment: 'development', // or devnet, testnet, mainnet
-      endpoint: 'http://193.2.72.90/node',  // gateway node URI
+      endpoint: 'https://193.2.72.90/node',  // gateway node URI
       blockchain: {
         name: 'hardhat1:31337', // or otp:2043, base:8453, gnosis:100
-        rpc: 'http://193.2.72.90/evm1'
+        rpc: 'https://193.2.72.90/evm1'
       },
     });
   }
