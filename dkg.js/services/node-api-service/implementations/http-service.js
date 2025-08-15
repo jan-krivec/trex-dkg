@@ -11,7 +11,7 @@ class HttpService {
         try {
             const response = await axios({
                 method: 'get',
-                url: `${endpoint}:${port}/info`,
+                url: `${endpoint}/info`,
                 headers: this.prepareRequestConfig(authToken),
             });
 
@@ -47,7 +47,7 @@ class HttpService {
             }
             const response = await axios({
                 method: 'get',
-                url: `${endpoint}:${port}/bid-suggestion`,
+                url: `${endpoint}/bid-suggestion`,
                 params,
                 headers: this.prepareRequestConfig(authToken),
             });
@@ -62,7 +62,7 @@ class HttpService {
         try {
             const response = await axios({
                 method: 'post',
-                url: `${endpoint}:${port}/local-store`,
+                url: `${endpoint}/local-store`,
                 data: assertions,
                 headers: this.prepareRequestConfig(authToken),
             });
@@ -87,7 +87,7 @@ class HttpService {
         try {
             const response = await axios({
                 method: 'post',
-                url: `${endpoint}:${port}/publish`,
+                url: `${endpoint}/publish`,
                 data: {
                     assertionId,
                     assertion,
@@ -109,7 +109,7 @@ class HttpService {
         try {
             const response = await axios({
                 method: 'post',
-                url: `${endpoint}:${port}/get`,
+                url: `${endpoint}/get`,
                 data: {
                     id: UAL,
                     state,
@@ -138,7 +138,7 @@ class HttpService {
         try {
             const response = await axios({
                 method: 'post',
-                url: `${endpoint}:${port}/update`,
+                url: `${endpoint}/update`,
                 data: {
                     assertionId,
                     assertion,
@@ -160,7 +160,7 @@ class HttpService {
         try {
             const response = await axios({
                 method: 'post',
-                url: `${endpoint}:${port}/query`,
+                url: `${endpoint}/query`,
                 data: { query, type, repository },
                 headers: this.prepareRequestConfig(authToken),
             });
@@ -187,7 +187,7 @@ class HttpService {
 
         const axios_config = {
             method: 'get',
-            url: `${endpoint}:${port}/${operation}/${operationId}`,
+            url: `${endpoint}/${operation}/${operationId}`,
             headers: this.prepareRequestConfig(authToken),
         };
         do {
