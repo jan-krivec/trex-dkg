@@ -63,7 +63,6 @@ services:
       "
     networks:
       - my-network
-    restart: unless-stopped
 
   ot-node:
     build:
@@ -88,8 +87,7 @@ services:
       - blazegraph
       - dkg-evm-module
     working_dir: /app/ot-node-docker  # Ensure the working directory is set to /app/ot-node-docker
-    entrypoint: [ "/bin/sh", "-c", "/bin/sleep 25 && chmod +x ./tools/local-network-setup/setup-linux-environment.sh && exec ./tools/local-network-setup/setup-linux-environment.sh --nodes=8" ]
-    restart: unless-stopped
+    entrypoint: [ "/bin/sh", "-c", "/bin/sleep 25 && chmod +x ./tools/local-network-setup/setup-linux-environment.sh && ./tools/local-network-setup/setup-linux-environment.sh --nodes=8" ]
 
   ui:
     build:
@@ -110,6 +108,7 @@ services:
       dockerfile: nginx.Dockerfile
     container_name: nginx-proxy
     ports:
+      - "80:80"
       - "443:443"
     volumes:
       - nginx-certs:/etc/nginx/certs

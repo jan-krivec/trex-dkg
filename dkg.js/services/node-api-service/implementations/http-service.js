@@ -11,7 +11,7 @@ class HttpService {
         try {
             const response = await axios({
                 method: 'get',
-                url: `${endpoint}/info`,
+                url: `${endpoint}${port != null && port !== "" ? ':' : '' }${port}/info`,
                 headers: this.prepareRequestConfig(authToken),
             });
 
@@ -47,7 +47,7 @@ class HttpService {
             }
             const response = await axios({
                 method: 'get',
-                url: `${endpoint}/bid-suggestion`,
+                url: `${endpoint}${port != null && port !== "" ? ':' : '' }${port}/bid-suggestion`,
                 params,
                 headers: this.prepareRequestConfig(authToken),
             });
@@ -62,7 +62,7 @@ class HttpService {
         try {
             const response = await axios({
                 method: 'post',
-                url: `${endpoint}/local-store`,
+                url: `${endpoint}${port != null && port !== "" ? ':' : '' }${port}/local-store`,
                 data: assertions,
                 headers: this.prepareRequestConfig(authToken),
             });
@@ -87,7 +87,7 @@ class HttpService {
         try {
             const response = await axios({
                 method: 'post',
-                url: `${endpoint}/publish`,
+                url: `${endpoint}${port != null && port !== "" ? ':' : '' }${port}/publish`,
                 data: {
                     assertionId,
                     assertion,
@@ -109,7 +109,7 @@ class HttpService {
         try {
             const response = await axios({
                 method: 'post',
-                url: `${endpoint}/get`,
+                url: `${endpoint}${port != null && port !== "" ? ':' : '' }${port}/get`,
                 data: {
                     id: UAL,
                     state,
@@ -138,7 +138,7 @@ class HttpService {
         try {
             const response = await axios({
                 method: 'post',
-                url: `${endpoint}/update`,
+                url: `${endpoint}${port != null && port !== "" ? ':' : '' }${port}/update`,
                 data: {
                     assertionId,
                     assertion,
@@ -160,7 +160,7 @@ class HttpService {
         try {
             const response = await axios({
                 method: 'post',
-                url: `${endpoint}/query`,
+                url: `${endpoint}${port != null && port !== "" ? ':' : '' }${port}/query`,
                 data: { query, type, repository },
                 headers: this.prepareRequestConfig(authToken),
             });
@@ -187,7 +187,7 @@ class HttpService {
 
         const axios_config = {
             method: 'get',
-            url: `${endpoint}/${operation}/${operationId}`,
+            url: `${endpoint}${port != null && port !== "" ? ':' : '' }${port}/${operation}/${operationId}`,
             headers: this.prepareRequestConfig(authToken),
         };
         do {
@@ -209,7 +209,7 @@ class HttpService {
         } while (
             response.data.status !== OPERATION_STATUSES.COMPLETED &&
             response.data.status !== OPERATION_STATUSES.FAILED
-        );
+            );
         return response.data;
     }
 
