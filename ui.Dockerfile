@@ -30,4 +30,4 @@ RUN if [ -e /app/dkg.js/node_modules/dkg-evm-module ] || [ -L /app/dkg.js/node_m
 EXPOSE 4200
 
 # Default command
-CMD ["npm", "start"]
+CMD ["/bin/sh", "-c", "npm run build && npx http-server dist/app -p 4200 --cors"]
