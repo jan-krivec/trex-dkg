@@ -101,14 +101,7 @@ services:
     command: ["/bin/sh", "-c", "npm run build && npx http-server dist/app -p 4200 --cors"]
     environment:
       - NODE_ENV=production
-      - NODE_OPTIONS="--max_old_space_size=512"
       - NG_CLI_ANALYTICS=false
-    deploy:
-      resources:
-        limits:
-          memory: 768M
-        reservations:
-          memory: 256M
     networks:
       - my-network
 
