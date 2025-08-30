@@ -108,7 +108,7 @@ class IdentityOperationsManager {
         const registerReceipt = await this.blockchainService.executeContractFunction(
             'Identity',
             'addKey',
-            [IdentitySDK.utils.encodeAndHash(['address'], [keyAddress]), purpose, IdentitySDK.utils.enums.KeyType.ECDSA],
+            [IdentitySDK.utils.encodeAndHash(['address'], [keyAddress]), purpose, 1],
             blockchain,
             identityAddress
         )
