@@ -166,7 +166,7 @@ class IdentityOperationsManager {
         let keyTypes;
 
         if (keyType == null) {
-            keyTypes = [IdentitySDK.utils.enums.KeyPurpose.MANAGEMENT, IdentitySDK.utils.enums.KeyPurpose.ACTION, IdentitySDK.utils.enums.KeyPurpose.CLAIM];
+            keyTypes = [1, 2, 3];
         } else {
             keyTypes = [this.mapPurposeToKey(keyType)];
         }
@@ -231,11 +231,11 @@ class IdentityOperationsManager {
     mapPurposeToKey(keyPurpose) {
         switch (keyPurpose) {
             case "MANAGEMENT":
-                return IdentitySDK.utils.enums.KeyPurpose.MANAGEMENT;
+                return 1;
             case "ACTION":
-                return IdentitySDK.utils.enums.KeyPurpose.ACTION;
+                return 2;
             default:
-                return IdentitySDK.utils.enums.KeyPurpose.CLAIM;
+                return 3;
         }
     }
 
