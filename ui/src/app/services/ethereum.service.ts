@@ -158,13 +158,13 @@ export class EthereumService implements OnInit, OnDestroy {
   mapPurposeToKey(keyPurpose: string) {
     switch (keyPurpose) {
       case 'MANAGEMENT':
-        return IdentitySDK.utils.enums.KeyPurpose.MANAGEMENT;
+        return 1;
         break;
       case 'ACTION':
-        return IdentitySDK.utils.enums.KeyPurpose.ACTION;
+        return 2;
         break;
       default:
-        return IdentitySDK.utils.enums.KeyPurpose.CLAIM;
+        return 3;
         break;
     }
   }
