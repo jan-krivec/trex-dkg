@@ -11,7 +11,7 @@ declare let window: any;
 @Injectable({
   providedIn: 'root'
 })
-export class EthereumService implements OnInit, OnDestroy {
+export class EthereumService implements OnDestroy {
   web3: any;
   dkg: any;
 
@@ -91,16 +91,18 @@ export class EthereumService implements OnInit, OnDestroy {
         rpc: 'http://194.249.2.210:8545'
       },
     });
-  }
-
-  ngOnInit() {
-    if (window.ethereum !== 'undefined') {
-      window.ethereum.addListener('accountsChanged', this.handleAccountsChanged);
+    
+    if (typeof window.ethereum !== 'undefined') {
+      (window as any).ethereum.on('accountsChanged', (accounts: string[]) => {
+        this.handleAccountsChanged(accounts);
+      });
     }
   }
 
   ngOnDestroy() {
-    window.ethereum.removeListener('accountsChanged', this.handleAccountsChanged);
+    if (typeof window.ethereum !== 'undefined') {
+      window.ethereum.removeListener('accountsChanged', this.handleAccountsChanged);
+    }
   }
 
   async checkMetaMask(): Promise<boolean> {
@@ -139,7 +141,7 @@ export class EthereumService implements OnInit, OnDestroy {
     return false;
   }
 
-  handleAccountsChanged(accounts: Array<string>) {
+  handleAccountsChanged = (accounts: Array<string>) => {
     this.account = accounts?.length > 0 ? accounts[0] : null;
   }
 

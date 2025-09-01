@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy} from "@angular/core";
+import {Injectable, OnDestroy, OnInit} from "@angular/core";
 import {EthereumService} from "./ethereum.service";
 import {ErrorHandlerService} from "../shared/error/error-handler.service";
 import {Subject, Subscription} from "rxjs";
@@ -23,7 +23,7 @@ type RDFObject = {
 @Injectable({
   providedIn: 'root'
 })
-export class DkgService extends EthereumService implements OnDestroy {
+export class DkgService extends EthereumService implements OnInit, OnDestroy {
   hub: any;
 
   subscription: Subscription;
@@ -53,6 +53,15 @@ export class DkgService extends EthereumService implements OnDestroy {
 
   constructor(errorHandlerService: ErrorHandlerService) {
     super(errorHandlerService);
+  }
+
+  ngOnInit() {
+    if (typeof (window as any).ethereum !== 'undefined') {
+      (window as any).ethereum.on('accountsChanged', (accounts: string[]) => {
+        console.log('Accounts changed event fired', accounts);
+        this.handleAccountsChanged(accounts);
+      });
+    }
   }
 
   ngOnDestroy() {
